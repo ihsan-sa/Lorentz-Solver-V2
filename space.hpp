@@ -27,4 +27,6 @@ public:
 
 };
 
+Vector comp_a_lorentz(long double const q, long double const m, Vector const &v, Vector const &E, Vector const &B); //computes the acceleration due to the lorentz force
+
 #endif

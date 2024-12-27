@@ -7,6 +7,7 @@ void run_simulation(); //will parse the configuration file and run the simulatio
 void parse_particle(Space &space, std::size_t &line_idx);
 void parse_UMF(Space &space, std::size_t &line_idx);
 void parse_UEF(Space &space, std::size_t &line_idx);
+void parse_config(long double &t, long double &dt, std::size_t &line_idx);
 
 
 std::string get_line(std::size_t const idx);

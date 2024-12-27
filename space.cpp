@@ -88,40 +88,79 @@ void Space::simulate(long double const t, long double const dt) const{
 
     //now we loop through the simulation iteratons
     unsigned long long N = t/dt;
+    std::cout<<"Number of interations: "<<N<<std::endl;
     for(unsigned long long n{0}; n < N; n++){
+        if(cfig_output != no_output) std::cout<<(long double)n/N<<"%\n";
         //compute the fields at the positions of the particles and then set the next_positions
-        for(Particle* p_particle : p_particles_){
-        
-            //compute the lorentz force and accereation 
-            Vector f_lorentz{p_particle->q() * (e_field(p_particle->pos()) + (p_particle->vel() * b_field(p_particle->pos())))};
-            Vector a_lorentz{f_lorentz * (1/p_particle->m())};
-            // std::cout<<f_lorentz<<" "<<a_lorentz;
+        for(Particle* p_P : p_particles_){
 
             //implementing the algorithm
             //euler first
             if(cfig_sim_type == euler){
+
+                //compute the lorentz force and accereation 
+                // Vector f_lorentz{p_P->q() * (e_field(p_P->pos()) + (p_P->vel() * b_field(p_P->pos())))};
+                // Vector a_lorentz{f_lorentz * (1/p_P->m())};
                 
-                Vector new_vel{p_particle->vel() + (a_lorentz*dt)};;
-                Vector new_pos{p_particle->pos() + (new_vel + p_particle->vel())*(dt/2)};
-                p_particle->update_vel(new_vel);
-                p_particle->update_next_pos(new_pos);
-                // std::cout<<"Euler: "<<new_pos<<p_particle->next_pos()<<new_vel<<"\n";
+                Vector a_lorentz{comp_a_lorentz(p_P->q(), p_P->m(), p_P->vel(), e_field(p_P->pos()), b_field(p_P->pos()))};
+
+                Vector new_vel{p_P->vel() + (a_lorentz*dt)};;
+                Vector new_pos{p_P->pos() + (new_vel + p_P->vel())*(dt/2)}; //using an average
+                p_P->update_vel(new_vel);
+                p_P->update_next_pos(new_pos);
+                // std::cout<<"Euler: "<<new_pos<<p_P->next_pos()<<new_vel<<"\n";
+            }
+            else if(cfig_sim_type == rk4_euler){
+
+                //approximate velocity using rk4
+                Vector a1{comp_a_lorentz(p_P->q(), p_P->m(), p_P->vel(), e_field(p_P->pos()), b_field(p_P->pos()))};
+                Vector a2{comp_a_lorentz(p_P->q(), p_P->m(), p_P->vel() + ((dt/2) * a1), e_field(p_P->pos()), b_field(p_P->pos()))};
+                Vector a3{comp_a_lorentz(p_P->q(), p_P->m(), p_P->vel() + ((dt/2) * a2), e_field(p_P->pos()), b_field(p_P->pos()))};
+                Vector a4{comp_a_lorentz(p_P->q(), p_P->m(), p_P->vel() + (dt* a3), e_field(p_P->pos()), b_field(p_P->pos()))};
+
+                Vector new_vel{p_P->vel() + ((dt/6)*(a1 + (2*a2) + (2*a3) + a4))};
+
+                //now approximate position
+                //using euler
+                Vector new_pos{p_P->pos() + (new_vel * dt)};
+                
+                p_P->update_vel(new_vel);
+                p_P->update_next_pos(new_pos);
+                
+            }
+            else if(cfig_sim_type == rk4_hybrid){
+
+                Vector a1{comp_a_lorentz(p_P->q(), p_P->m(), p_P->vel(), e_field(p_P->pos()), b_field(p_P->pos()))};
+                Vector v1 = p_P->vel();
+                Vector a2{comp_a_lorentz(p_P->q(), p_P->m(), p_P->vel() + ((dt/2) * a1), e_field(p_P->pos()), b_field(p_P->pos()))};
+                Vector v2 = v1 + ((dt/2)*a1);
+                Vector a3{comp_a_lorentz(p_P->q(), p_P->m(), p_P->vel() + ((dt/2) * a2), e_field(p_P->pos()), b_field(p_P->pos()))};
+                Vector v3 = v1 + ((dt/2)*a2);
+                Vector a4{comp_a_lorentz(p_P->q(), p_P->m(), p_P->vel() + (dt* a3), e_field(p_P->pos()), b_field(p_P->pos()))};
+                Vector v4 = v1 + (dt*a3);
+
+                Vector new_vel{p_P->vel() + ((dt/6)*(a1 + (2*a2) + (2*a3) + a4))};
+                Vector new_pos{p_P->pos() + ((dt/6) * (v1 + (2*v2) + (2*v3) + v4))};
+
+                p_P->update_vel(new_vel);
+                p_P->update_next_pos(new_pos);
             }
 
         }
 
         //update all the positions
 
-        for(Particle* p_particle : p_particles_){
-            p_particle->update_pos();
-            File<<p_particle->pos().x()<<","<<p_particle->pos().y()<<","<<p_particle->pos().z()<<",";
+        for(Particle* p_P : p_particles_){
+            p_P->update_pos();
+            File<<p_P->pos().x()<<","<<p_P->pos().y()<<","<<p_P->pos().z()<<",";
         }
         File<<"\n";
 
     }
 }
-
-
+Vector comp_a_lorentz(long double const q, long double const m, Vector const &v, Vector const &E, Vector const &B){
+    return Vector{(q/m)*(E + (v*B))};
+}
 std::ostream &operator<<(std::ostream &out, Space const &rhs){
     std::cout<<"Space: \n";
     for(Object *p_object : rhs.p_objects_){

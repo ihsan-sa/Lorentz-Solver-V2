@@ -9,10 +9,13 @@ std::string get_line(std::size_t const idx){
     std::string line{};
     while(std::getline(Config_file, line)){
         if(line_idx == idx){
+            Config_file.close();
             return line;
         }
         line_idx++;
     }
+
+    Config_file.close();
 
     return "";
 }
@@ -79,22 +82,61 @@ void parse_UEF(Space &space, std::size_t &line_idx){
     space.add({p_e});
     line_idx++;
 }
+void parse_SPC(Space &space, std::size_t &line_idx){
+    line_idx++;
+    Vector pos{extract_vector(get_line(line_idx))};
+    line_idx++;
+    long double q{std::stold(get_line(line_idx))};
+
+    SPC* p_spc{new SPC{pos, q}};
+    space.add({p_spc});
+    line_idx++;
+}
+
+void parse_config(long double &t, long double &dt, std::size_t &line_idx){
+    line_idx++;
+    t = std::stold(get_line(line_idx));
+    line_idx++;
+    dt = std::stold(get_line(line_idx));
+    line_idx++;
+    std::string sim_type{get_line(line_idx)};
+    if(sim_type == "RK4 Euler"){
+        cfig_sim_type = rk4_euler;
+    }else if(sim_type == "RK4 Hybrid"){
+        cfig_sim_type = rk4_hybrid;
+    }else if(sim_type == "Euler"){
+        cfig_sim_type = euler;
+    }
+    line_idx++;
+}
 
 
 void run_simulation(){
     Space sim_space{};
 
+    long double t{0};
+    long double dt{0};
+
     std::size_t line_idx{0};
     while(get_line(line_idx) != "#"){
 
         std::string line = get_line(line_idx);
-
-        if(line == "P"){
+        if(line == "CONFIG"){
+            std::cout<<"Config\n";
+            parse_config(t, dt, line_idx);
+        }
+        else if(line == "P"){
+            std::cout<<"P\n";
             parse_particle(sim_space, line_idx);
         }else if(line == "UMF"){
+            std::cout<<"UMF\n";
             parse_UMF(sim_space, line_idx);
         }else if(line == "UEF"){
+            std::cout<<"UEF\n";
             parse_UEF(sim_space, line_idx);
+        }else if(line == "SPC"){
+            std::cout<<"SPC\n";
+            parse_SPC(sim_space, line_idx);
         }
     
         line_idx ++;
@@ -102,5 +144,11 @@ void run_simulation(){
 
     std::cout<<sim_space;
 
-    sim_space.simulate(10, 0.01);
+    if(t == 0 || dt == 0){
+        std::cout<<"Please provide simulation time.\n";
+        throw std::domain_error{
+            "Err: no sim time or zero step provided."
+        };
+    }
+    sim_space.simulate(t, dt);
 }

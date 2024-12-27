@@ -15,6 +15,8 @@ class Object; //parent class
 class UEF; //uniform electric field
 class UMF; //uniform magnetic field
 
+class SPC; //static point charge
+
 class Particle;
 
 //class declarations
@@ -69,6 +71,27 @@ public:
     friend std::ostream &operator<<(std::ostream &out, UMF const &rhs);
 };
 
+class SPC : public Object{
+    Vector pos_;
+    long double q_;
+public:
+    SPC();
+    SPC(Vector const &pos, long double const q);
+    ~SPC();
+
+    SPC(SPC const &org);
+    SPC(SPC &&org);
+
+    Vector pos() const;
+    long double q() const;
+
+    void print() const override;
+    bool is_particle() const override;
+    Vector e_field(Vector const &pos) const override; //returns the electric field vector at a point due to that object
+    Vector b_field(Vector const &pos) const override; //returns the magnetic field vector at a point due to that object
+
+    friend std::ostream &operator<<(std::ostream &out, SPC const &rhs);
+};
 
 class Particle : public Object{
     Vector pos_; //position
