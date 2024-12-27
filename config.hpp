@@ -4,18 +4,18 @@
 #define TOLERANCE 10e-40
 
 enum E_Field_At_Point{
-    Zero, 
-    Ignore
+    zero, 
+    ignore
 };
 
 enum Simulation_Type{
-    Euler,
-    RK4, 
-    RK4_Hybrid
+    euler,
+    rk4, 
+    rk4_Hybrid
 };
 
 
-extern E_Field_At_Point FIELD_AT_PT;
-extern Simulation_Type SIM_TYPE;
+extern E_Field_At_Point cfig_field_at_pt;
+extern Simulation_Type cfig_sim_type;
 
 #endif

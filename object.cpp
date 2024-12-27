@@ -200,7 +200,7 @@ Vector Particle::e_field(Vector const &new_pos) const{
     //using E = kq/r^2
     long double const r{Vector::dist(pos(), new_pos)};
 
-    if(FIELD_AT_PT == Zero){
+    if(cfig_field_at_pt == zero){
         if(std::abs(r) < TOLERANCE) return Vector{0,0,0}; //if the distance is zero, we return the zero vector instead of infinity
     }
 

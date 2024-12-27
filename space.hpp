@@ -13,6 +13,7 @@ class Space : public Object{
 public:
     Space(std::initializer_list<Object *> p_objects);
     void add(std::initializer_list<Object *> p_objects);
+    ~Space();
 
     void print() const override;
 

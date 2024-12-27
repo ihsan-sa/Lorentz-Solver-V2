@@ -15,7 +15,10 @@ x_{x},
 y_{y},
 z_{z}
 {
-    //empty constructor
+    if(std::abs(x) < TOLERANCE) x_ = 0;
+    if(std::abs(y) < TOLERANCE) y_ = 0;
+    if(std::abs(z) < TOLERANCE) z_ = 0;
+
 }
 
 Vector::Vector(Vector const &org) :

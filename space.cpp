@@ -1,5 +1,11 @@
 #include "space.hpp"
 #include <fstream>
+Space::~Space(){
+    for(Object *p_object : p_objects_){
+        delete p_object;
+        p_object = nullptr;
+    }
+}
 
 Space::Space(std::initializer_list<Object *> p_objects){
     for(Object* p_object : p_objects){
@@ -28,7 +34,7 @@ Vector Space::e_field(Vector const &pos) const{
 
     for(Object *p_object : p_objects_){
 
-        if(FIELD_AT_PT == Ignore){
+        if(cfig_field_at_pt == ignore){
             //if we choose to ignore the pt, then we do this
             if(p_object->is_particle()){
                 Particle *p_particle = (Particle*) p_object; //typecast is to a particle
@@ -60,26 +66,40 @@ void Space::simulate(long double const t, long double const dt) const{
 
     std::ofstream File{"data.csv"};
 
+    //print the column headers
+
+    std::size_t p_idx{0};
     for(Particle* p_particle : p_particles_){
-        File<<"x,y,z,";
+        std::string x{"x"};
+        std::string y{"y"};
+        std::string z{"z"};
+
+        x += std::to_string(p_idx);
+        y += std::to_string(p_idx);
+        z += std::to_string(p_idx);
+        File<<x<<','<<y<<','<<z<<",";
+        p_idx++;
     }
     File<<"\n";
     for(Particle* p_particle : p_particles_){
         File<<p_particle->pos().x()<<","<<p_particle->pos().y()<<","<<p_particle->pos().z()<<",";
     }
     File<<"\n";
-    //now we loop through iterations
+
+    //now we loop through the simulation iteratons
     unsigned long long N = t/dt;
     for(unsigned long long n{0}; n < N; n++){
         //compute the fields at the positions of the particles and then set the next_positions
         for(Particle* p_particle : p_particles_){
         
+            //compute the lorentz force and accereation 
             Vector f_lorentz{p_particle->q() * (e_field(p_particle->pos()) + (p_particle->vel() * b_field(p_particle->pos())))};
             Vector a_lorentz{f_lorentz * (1/p_particle->m())};
             // std::cout<<f_lorentz<<" "<<a_lorentz;
 
-            //implementing euler's first
-            if(SIM_TYPE == Euler){
+            //implementing the algorithm
+            //euler first
+            if(cfig_sim_type == euler){
                 
                 Vector new_vel{p_particle->vel() + (a_lorentz*dt)};;
                 Vector new_pos{p_particle->pos() + (new_vel + p_particle->vel())*(dt/2)};
