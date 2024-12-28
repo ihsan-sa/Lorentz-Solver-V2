@@ -122,20 +122,20 @@ void run_simulation(){
 
         std::string line = get_line(line_idx);
         if(line == "CONFIG"){
-            std::cout<<"Config\n";
+            // std::cout<<"Config\n";
             parse_config(t, dt, line_idx);
         }
         else if(line == "P"){
-            std::cout<<"P\n";
+            // std::cout<<"P\n";
             parse_particle(sim_space, line_idx);
         }else if(line == "UMF"){
-            std::cout<<"UMF\n";
+            // std::cout<<"UMF\n";
             parse_UMF(sim_space, line_idx);
         }else if(line == "UEF"){
-            std::cout<<"UEF\n";
+            // std::cout<<"UEF\n";
             parse_UEF(sim_space, line_idx);
         }else if(line == "SPC"){
-            std::cout<<"SPC\n";
+            // std::cout<<"SPC\n";
             parse_SPC(sim_space, line_idx);
         }
     
