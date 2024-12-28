@@ -88,7 +88,7 @@ void Space::simulate(long double const t, long double const dt) const{
 
     //now we loop through the simulation iteratons
     unsigned long long N = t/dt;
-    std::cout<<"Number of interations: "<<N<<std::endl;
+    std::cout<<"Number of iterations: "<<N<<std::endl;
     for(unsigned long long n{0}; n < N; n++){
         if(cfig_output != no_output) std::cout<<(long double)n/N<<"%\n";
         //compute the fields at the positions of the particles and then set the next_positions
