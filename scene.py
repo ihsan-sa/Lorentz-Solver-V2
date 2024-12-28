@@ -28,19 +28,32 @@ def string_to_vec(str):
     
     return (x,y,z)
 
+def change_vec_mag(vec, mag):
+    (x,y,z) = vec
+    norm = np.sqrt(np.pow(x, 2) + np.pow(y,2) + np.pow(z, 2))
+    sc = mag/norm
+    x = x*sc
+    y = y*sc
+    z = z*sc
+    return (x,y,z)
 class graph_data(ThreeDScene):
     def construct(self):
 
-        output_ctxt = False
+        output_ctxt = True
+        show_vecs = True
 
         config_file = open("config.txt", "r")
 
         sim_time = 0
 
+        vector_scale = 0.2
+
         data_disp = []
         descp = Text("")
 
         point_charges = []
+        uefs = []
+        umfs = []
 
         # create a triangle that is rotating
         
@@ -108,10 +121,38 @@ class graph_data(ThreeDScene):
 
                 umf_txt = Text(f"Uniform Magnetic Field: \n\n\t- field vector: {field}", font_size=25, color=BLUE)
                 data_disp.append(umf_txt)
+                umfs.append(string_to_vec(field))
                 # self.play(Write(umf_txt))
                 # self.wait(1.2)
                 # self.play(FadeOut(umf_txt))
-            
+            if(line.strip() == "SUMF"):
+                print("umf")
+                line = config_file.readline()
+                field = line.strip()
+
+                line = line = config_file.readline()
+                c1 = line.strip()
+                line = line = config_file.readline()
+                c2 = line.strip()
+                line = line = config_file.readline()
+                c3 = line.strip()
+                line = line = config_file.readline()
+                c4 = line.strip()
+                line = line = config_file.readline()
+                c5 = line.strip()
+                line = line = config_file.readline()
+                c6 = line.strip()
+                line = line = config_file.readline()
+                c7 = line.strip()
+                line = line = config_file.readline()
+                c8 = line.strip()
+
+        
+
+                sumf_txt = Text(f"Sectioned Uniform Magnetic Field: \n\n\t- field vector: {field} \n\n\t- corners: \n\n\t\t- {c1} \n\n\t\t- {c2} \n\n\t\t- {c3} \n\n\t\t- {c4} \n\n\t\t- {c5} \n\n\t\t- {c6} \n\n\t\t- {c7} \n\n\t\t- {c8}", font_size=25, color=BLUE)
+                data_disp.append(sumf_txt)
+                umfs.append(string_to_vec(field))
+
             if(line.strip() == "UEF"):
                 print("uef")
                 line = config_file.readline()
@@ -120,6 +161,7 @@ class graph_data(ThreeDScene):
 
                 uef_txt = Text(f"Uniform Electric Field: \n\n\t- field vector: {field}", font_size=25, color=ORANGE)
                 data_disp.append(uef_txt)
+                uefs.append(string_to_vec(field))
                 # self.play(Write(uef_txt))
                 # self.wait(1.2)
                 # self.play(FadeOut(uef_txt))
@@ -140,7 +182,14 @@ class graph_data(ThreeDScene):
                 self.play(ReplacementTransform(descp, g_data_disp[0]))
                 self.wait(1.2)
                 if(len(g_data_disp) == 1):
-                    self.play(FadeOut(g_data_disp[0]))
+
+                    if(len(data_disp)%2 != 0):
+                        self.play(ReplacementTransform(g_data_disp[0], data_disp[len(data_disp) - 1]))
+                        self.wait(1.2)
+                        self.play(FadeOut(data_disp[len(data_disp) - 1]))
+
+                    else: 
+                        self.play(FadeOut(g_data_disp[0]))
                 else:
                     for i in range(len(g_data_disp) - 1):
                         self.play(ReplacementTransform(g_data_disp[i], g_data_disp[i+1]))
@@ -188,14 +237,32 @@ class graph_data(ThreeDScene):
             max_y = max(max_y, np.absolute(y))
             max_z = max(max_z, np.absolute(z))
 
+        if(show_vecs):
+            max_coord = max(max_x,  max_y, max_z)
+
+            for uef in uefs:
+                (x,y,z) = change_vec_mag(uef, vector_scale*max_coord)
+                max_x = max(max_x, x*2)
+                max_y = max(max_y, y*2)
+                max_z = max(max_z, z*2)
+                
+            
+            for umf in umfs:
+                (x,y,z) = change_vec_mag(umf, vector_scale*max_coord)
+                max_x = max(max_x, x*2)
+                max_y = max(max_y, y*2)
+                max_z = max(max_z, z*2)
+
         print(f"done making vals. max_x: {max_x} max_y: {max_y} max_z: {max_z}")
         max_x = 1.2 * max_x
         max_y = 1.2* max_y
         max_z = 1.2 * max_z
 
-        max_x = min(max_x, 0.01)
+        max_x = max(max_x, 0.01)
         max_y = max(max_y, 0.01)
         max_z = max(max_z, 0.01)
+
+        max_coord = max(max_x,  max_y, max_z)
 
         axes = ThreeDAxes(
             x_range=[-max_x,max_x,0.001],
@@ -232,7 +299,19 @@ class graph_data(ThreeDScene):
         self.begin_ambient_camera_rotation(
             rate=PI/5,about="theta"
         )
+
+
         self.play(FadeIn(axes), FadeIn(labels))
+
+        if(show_vecs):
+            for uef in uefs:
+                vec = Vector(direction=axes.c2p(*change_vec_mag(uef, vector_scale*max_coord)), color = ORANGE)
+                self.add(vec)
+            
+            for umf in umfs:
+                vec = Vector(direction=axes.c2p(*change_vec_mag(umf, vector_scale*max_coord)), color = BLUE)
+                self.add(vec)
+
         for spc in point_charges:
             point = Dot3D(point=axes.c2p(*spc), color=GREEN, radius=0.05)
             self.add(point)

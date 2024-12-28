@@ -2,7 +2,7 @@
 #define OBJECT_HPP
 
 #include "vector.hpp"
-
+#include <vector>
 
 //constants etc
 
@@ -14,6 +14,8 @@ class Object; //parent class
 
 class UEF; //uniform electric field
 class UMF; //uniform magnetic field
+
+class SUMF; //sectioned uniform magnetic field
 
 class SPC; //static point charge
 
@@ -70,6 +72,31 @@ public:
 
     friend std::ostream &operator<<(std::ostream &out, UMF const &rhs);
 };
+
+class SUMF : public Object{
+    Vector b_field_;
+    Vector corners_[8];
+public:
+    SUMF();
+    SUMF(Vector const &b_field, std::initializer_list<Vector> corners);
+    ~SUMF(); //destructor
+
+    SUMF(SUMF const &org); //copy constructor
+    SUMF(SUMF &&org); //move constructor
+
+    Vector b_field() const; //returns the e_field vector NOTE should i make the distinction between this one and the other one?
+    Vector const * const corners() const; //returns the address to corners
+    bool is_in_region(Vector const &pos) const; //returns true if pos is in the region
+
+    void print() const override;
+    bool is_particle() const override; //returns true if it is a particle
+    Vector e_field(Vector const &pos) const override; //returns the electric field vector at a point due to that object
+    Vector b_field(Vector const &pos) const override; //returns the magnetic field vector at a point due to that object
+
+    friend std::ostream &operator<<(std::ostream &out, SUMF const &rhs);
+};
+
+
 
 class SPC : public Object{
     Vector pos_;

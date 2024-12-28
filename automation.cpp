@@ -74,6 +74,30 @@ void parse_UMF(Space &space, std::size_t &line_idx){
     space.add({p_m});
     line_idx++;
 }
+void parse_SUMF(Space &space, std::size_t &line_idx){
+    line_idx++;
+    Vector field{extract_vector(get_line(line_idx))};
+    line_idx++;
+    Vector c1{extract_vector(get_line(line_idx))};
+    line_idx++;
+    Vector c2{extract_vector(get_line(line_idx))};
+    line_idx++;
+    Vector c3{extract_vector(get_line(line_idx))};
+    line_idx++;
+    Vector c4{extract_vector(get_line(line_idx))};
+    line_idx++;
+    Vector c5{extract_vector(get_line(line_idx))};
+    line_idx++;
+    Vector c6{extract_vector(get_line(line_idx))};
+    line_idx++;
+    Vector c7{extract_vector(get_line(line_idx))};
+    line_idx++;
+    Vector c8{extract_vector(get_line(line_idx))};
+
+    SUMF* p_m{new SUMF{field, {c1,c2,c3,c4,c5,c6,c7,c8}}};
+    space.add({p_m});
+    line_idx++;
+}
 void parse_UEF(Space &space, std::size_t &line_idx){
     line_idx++;
     Vector field{extract_vector(get_line(line_idx))};
@@ -131,6 +155,9 @@ void run_simulation(){
         }else if(line == "UMF"){
             // std::cout<<"UMF\n";
             parse_UMF(sim_space, line_idx);
+        }else if(line == "SUMF"){
+            parse_SUMF(sim_space, line_idx);
+
         }else if(line == "UEF"){
             // std::cout<<"UEF\n";
             parse_UEF(sim_space, line_idx);

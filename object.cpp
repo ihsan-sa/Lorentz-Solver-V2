@@ -115,6 +115,111 @@ void UMF::print() const{
     std::cout<<std::endl;
 }
 
+//SUMF
+
+SUMF::SUMF() :
+b_field_{Vector{}}
+{
+    //empty
+}
+
+SUMF::SUMF(Vector const &b_field, std::initializer_list<Vector> corners) :
+b_field_{b_field}, 
+corners_{}
+{
+    int idx{0};
+    for(Vector corner : corners){
+        corners_[idx] = corner;
+        idx++;
+    }
+}
+SUMF::SUMF(SUMF const &org) :
+b_field_{org.b_field()}, 
+corners_{}
+{
+    for(int idx{0}; idx < 8; idx++){
+        corners_[idx] = org.corners()[idx];
+    }
+}
+SUMF::SUMF(SUMF &&org) :
+b_field_{Vector{}}
+{
+    std::swap(b_field_, org.b_field_);
+    std::swap(corners_, org.corners_);
+}
+SUMF::~SUMF(){
+    b_field_.clear();
+    for(int idx{0}; idx < 8; idx++){
+        corners_[idx] = Vector{};
+    }
+}
+
+Vector SUMF::b_field() const{
+    return b_field_;
+}
+Vector const * const SUMF::corners() const{
+    return corners_;
+}
+Vector SUMF::e_field(Vector const &pos) const{
+    return Vector{};
+}
+
+bool SUMF::is_in_region(Vector const &pos) const{
+    long double x_max{corners()[0].x()}, x_min{corners()[0].x()};
+    long double y_max{corners()[0].y()}, y_min{corners()[0].y()};
+    long double z_max{corners()[0].z()}, z_min{corners()[0].z()};
+
+    for(int idx{1}; idx < 8; idx++){
+        long double x{corners()[idx].x()};
+        long double y{corners()[idx].y()};
+        long double z{corners()[idx].z()};
+
+        x_max = std::max(x_max, x);
+        x_min = std::min(x_min, x);
+        y_max = std::max(y_max, y);
+        y_min = std::min(y_min, y);
+        z_max = std::max(z_max, z);
+        z_min = std::min(z_min, z);
+    }
+
+    if(pos.x() >= x_min && pos.x() <= x_max && pos.y() >= y_min && pos.y() <= y_max && pos.z() >= z_min && pos.z() <= z_max) return true;
+    else return false;
+
+}
+
+Vector SUMF::b_field(Vector const &pos) const{
+    if(is_in_region(pos)) return b_field();
+    else return Vector{};
+}
+
+bool SUMF::is_particle() const{
+    return false;
+}
+
+std::ostream &operator<<(std::ostream &out, SUMF const &rhs){
+    out<<"Uniform Magnetic Field (SUMF)\n";
+    out<<"\te_field: "<<rhs.e_field({0,0,0})<<"\n";
+    out<<"\tb_field: "<<rhs.b_field(Vector{0,0,0});
+    out<<"\n\tcorners:";
+    for(int idx{0}; idx < 8; idx++){
+        out<<"\n\t\t"<<rhs.corners()[idx];
+    }
+    out<<std::endl;
+    return out;
+}
+
+void SUMF::print() const{
+    std::cout<<"\tUniform Magnetic Field (SUMF)\n";
+    std::cout<<"\t\te_field: "<<e_field({0,0,0})<<"\n";
+    std::cout<<"\t\tb_field: "<<b_field(Vector{0,0,0});
+    std::cout<<"\n\t\tcorners:";
+    for(int idx{0}; idx < 8; idx++){
+        std::cout<<"\n\t\t\t"<<corners()[idx];
+    }
+    std::cout<<std::endl;
+}
+
+
 //PARTICLE
 
 Particle::Particle() :
