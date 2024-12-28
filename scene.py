@@ -31,6 +31,8 @@ def string_to_vec(str):
 class graph_data(ThreeDScene):
     def construct(self):
 
+        output_ctxt = False
+
         config_file = open("config.txt", "r")
 
         sim_time = 0
@@ -125,30 +127,32 @@ class graph_data(ThreeDScene):
         self.play(Write(descp))
         self.wait(1.4)
 
-        g_data_disp = []
+        if(output_ctxt):
+            g_data_disp = []
 
-        for i in range(int(len(data_disp)/2)):
-            g_data_disp.append(VGroup(
-                data_disp[2*i].shift(3*LEFT), 
-                data_disp[(2*i)+1].shift(3*RIGHT)
-            ))
-        
-        if(len(g_data_disp) != 0):
-            self.play(ReplacementTransform(descp, g_data_disp[0]))
-            self.wait(1.2)
-            if(len(g_data_disp) == 1):
-                self.play(FadeOut(g_data_disp[0]))
-            else:
-                for i in range(len(g_data_disp) - 1):
-                    self.play(ReplacementTransform(g_data_disp[i], g_data_disp[i+1]))
-                    self.wait(1.2)
-                if(len(data_disp)%2 == 0):
-                    self.play(FadeOut(g_data_disp[len(g_data_disp) - 1]))
-                else:
-                    self.play(ReplacementTransform(g_data_disp[len(g_data_disp) - 1], data_disp[len(data_disp) - 1]))
-                    self.wait(1.2)
-                    self.play(FadeOut(data_disp[len(data_disp) - 1]))
+            for i in range(int(len(data_disp)/2)):
+                g_data_disp.append(VGroup(
+                    data_disp[2*i].shift(3*LEFT), 
+                    data_disp[(2*i)+1].shift(3*RIGHT)
+                ))
             
+            if(len(g_data_disp) != 0):
+                self.play(ReplacementTransform(descp, g_data_disp[0]))
+                self.wait(1.2)
+                if(len(g_data_disp) == 1):
+                    self.play(FadeOut(g_data_disp[0]))
+                else:
+                    for i in range(len(g_data_disp) - 1):
+                        self.play(ReplacementTransform(g_data_disp[i], g_data_disp[i+1]))
+                        self.wait(1.2)
+                    if(len(data_disp)%2 == 0):
+                        self.play(FadeOut(g_data_disp[len(g_data_disp) - 1]))
+                    else:
+                        self.play(ReplacementTransform(g_data_disp[len(g_data_disp) - 1], data_disp[len(data_disp) - 1]))
+                        self.wait(1.2)
+                        self.play(FadeOut(data_disp[len(data_disp) - 1]))
+        else:
+            self.play(FadeOut(descp))   
 
         os.system("./a.out")
 
@@ -188,10 +192,15 @@ class graph_data(ThreeDScene):
         max_x = 1.2 * max_x
         max_y = 1.2* max_y
         max_z = 1.2 * max_z
+
+        max_x = min(max_x, 0.01)
+        max_y = max(max_y, 0.01)
+        max_z = max(max_z, 0.01)
+
         axes = ThreeDAxes(
-            x_range=[-max_x,max_x,0.1],
-            y_range=[-max_y,max_y,0.1],
-            z_range=[-max_z,max_z ,0.1],
+            x_range=[-max_x,max_x,0.001],
+            y_range=[-max_y,max_y,0.001],
+            z_range=[-max_z,max_z ,0.001],
             axis_config={"include_numbers": False, "include_ticks": False}
         )
         print("Done making axes")
@@ -210,7 +219,9 @@ class graph_data(ThreeDScene):
             all_points.append([axes.c2p(x,y,z) for x,y,z in zip(all_x_vals[i], all_y_vals[i], all_z_vals[i])])
             all_lines.append(VMobject())
             all_lines[i].set_points_smoothly(all_points[i])
-            color = interpolate_color(RED, BLUE, i/(n_particles-1))
+            color = RED
+            if(n_particles > 1):
+                color = interpolate_color(RED, BLUE, i/(n_particles-1))
             all_lines[i].set_color(color)
 
         # line = VMobject()
