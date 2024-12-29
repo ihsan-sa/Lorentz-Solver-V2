@@ -96,7 +96,7 @@ void Space::simulate(long double const t, long double const dt) const{
 
             //implementing the algorithm
             //euler first
-            if(cfig_sim_type == euler){
+            if(cfig_num_method == euler){
 
                 //compute the lorentz force and accereation 
                 // Vector f_lorentz{p_P->q() * (e_field(p_P->pos()) + (p_P->vel() * b_field(p_P->pos())))};
@@ -110,7 +110,7 @@ void Space::simulate(long double const t, long double const dt) const{
                 p_P->update_next_pos(new_pos);
                 // std::cout<<"Euler: "<<new_pos<<p_P->next_pos()<<new_vel<<"\n";
             }
-            else if(cfig_sim_type == rk4_euler){
+            else if(cfig_num_method == rk4_euler){
 
                 //approximate velocity using rk4
                 Vector a1{comp_a_lorentz(p_P->q(), p_P->m(), p_P->vel(), e_field(p_P->pos()), b_field(p_P->pos()))};
@@ -128,7 +128,7 @@ void Space::simulate(long double const t, long double const dt) const{
                 p_P->update_next_pos(new_pos);
                 
             }
-            else if(cfig_sim_type == rk4_hybrid){
+            else if(cfig_num_method == rk4_hybrid){
 
                 Vector a1{comp_a_lorentz(p_P->q(), p_P->m(), p_P->vel(), e_field(p_P->pos()), b_field(p_P->pos()))};
                 Vector v1 = p_P->vel();
@@ -161,6 +161,37 @@ void Space::simulate(long double const t, long double const dt) const{
 Vector comp_a_lorentz(long double const q, long double const m, Vector const &v, Vector const &E, Vector const &B){
     return Vector{(q/m)*(E + (v*B))};
 }
+
+void Space::b_vector_field(Vector const &c1, Vector const &c2, long double const spacing) const{
+    std::ofstream File{"data.csv"};
+    File<<"x,y,z,xf,yf,zf"<<std::endl;
+
+    long double x_range{c2.x() - c1.x()};
+    long double y_range{c2.y() - c1.y()};
+    long double z_range{c2.z() - c1.z()};
+
+    unsigned long long N_x{(unsigned long long)(x_range/spacing)};
+    unsigned long long N_y{(unsigned long long)(y_range/spacing)};
+    unsigned long long N_z{(unsigned long long)(z_range/spacing)};
+
+    //now, we loop through everything
+    for(unsigned long long n_x{0}; n_x < N_x; n_x++){
+        for(unsigned long long n_y{0}; n_y < N_y; n_y++){
+            for(unsigned long long n_z{0}; n_z < N_z; n_z++){
+
+                Vector offset{n_z*spacing, n_y*spacing, n_z*spacing};
+                Vector pos{c1 + offset};
+
+                File<<pos.x()<<","<<pos.y()<<","<<pos.z()<<","<<b_field(pos).x()<<","<<b_field(pos).y()<<","<<b_field(pos).z()<<std::endl;
+
+            }
+        }
+    }
+
+
+}
+
+
 std::ostream &operator<<(std::ostream &out, Space const &rhs){
     std::cout<<"Space: \n";
     for(Object *p_object : rhs.p_objects_){

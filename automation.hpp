@@ -8,7 +8,7 @@ void parse_particle(Space &space, std::size_t &line_idx);
 void parse_UMF(Space &space, std::size_t &line_idx);
 void parse_SUMF(Space &space, std::size_t &line_idx);
 void parse_UEF(Space &space, std::size_t &line_idx);
-void parse_config(long double &t, long double &dt, std::size_t &line_idx);
+void parse_config(long double &t, long double &dt, Vector &c1, Vector &c2, long double &spacing, std::size_t &line_idx);
 
 
 std::string get_line(std::size_t const idx);

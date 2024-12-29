@@ -117,19 +117,32 @@ void parse_SPC(Space &space, std::size_t &line_idx){
     line_idx++;
 }
 
-void parse_config(long double &t, long double &dt, std::size_t &line_idx){
-    line_idx++;
-    t = std::stold(get_line(line_idx));
-    line_idx++;
-    dt = std::stold(get_line(line_idx));
+void parse_config(long double &t, long double &dt, Vector &c1, Vector &c2, long double &spacing, std::size_t &line_idx){
     line_idx++;
     std::string sim_type{get_line(line_idx)};
-    if(sim_type == "RK4 Euler"){
-        cfig_sim_type = rk4_euler;
-    }else if(sim_type == "RK4 Hybrid"){
-        cfig_sim_type = rk4_hybrid;
-    }else if(sim_type == "Euler"){
-        cfig_sim_type = euler;
+    if(sim_type == "Lorentz Motion"){
+        cfig_sim_type = lorentz_motion;
+        line_idx++;
+        t = std::stold(get_line(line_idx));
+        line_idx++;
+        dt = std::stold(get_line(line_idx));
+        line_idx++;
+        std::string method_type{get_line(line_idx)};
+        if(method_type == "RK4 Euler"){
+            cfig_num_method = rk4_euler;
+        }else if(method_type == "RK4 Hybrid"){
+            cfig_num_method = rk4_hybrid;
+        }else if(method_type == "Euler"){
+            cfig_num_method = euler;
+        }
+    }else if(sim_type == "B Field"){
+        cfig_sim_type = b_field;
+        line_idx++;
+        c1 = extract_vector(get_line(line_idx));
+        line_idx++;
+        c2 = extract_vector(get_line(line_idx));
+        line_idx++;
+        spacing = std::stold(get_line(line_idx));
     }
     line_idx++;
 }
@@ -138,8 +151,15 @@ void parse_config(long double &t, long double &dt, std::size_t &line_idx){
 void run_simulation(){
     Space sim_space{};
 
+    //vars needed for various sims
+    //lorentz motion
     long double t{0};
     long double dt{0};
+
+    //b field
+    Vector c1{};
+    Vector c2{};
+    long double spacing{};
 
     std::size_t line_idx{0};
     while(get_line(line_idx) != "#"){
@@ -147,7 +167,7 @@ void run_simulation(){
         std::string line = get_line(line_idx);
         if(line == "CONFIG"){
             // std::cout<<"Config\n";
-            parse_config(t, dt, line_idx);
+            parse_config(t, dt, c1, c2, spacing, line_idx);
         }
         else if(line == "P"){
             // std::cout<<"P\n";
@@ -171,11 +191,15 @@ void run_simulation(){
 
     std::cout<<sim_space;
 
-    if(t == 0 || dt == 0){
-        std::cout<<"Please provide simulation time.\n";
-        throw std::domain_error{
-            "Err: no sim time or zero step provided."
-        };
+    if(cfig_sim_type == lorentz_motion){
+        if(t == 0 || dt == 0){
+            std::cout<<"Please provide simulation time.\n";
+            throw std::domain_error{
+                "Err: no sim time or zero step provided."
+            };
+        }
+        sim_space.simulate(t, dt);
+    }else if(cfig_sim_type == b_field){
+        sim_space.b_vector_field(c1, c2, spacing);
     }
-    sim_space.simulate(t, dt);
 }

@@ -24,6 +24,7 @@ public:
     friend std::ostream &operator<<(std::ostream &out, Space const &rhs);
 
     void simulate(long double const t, long double const dt) const;
+    void b_vector_field(Vector const &c1, Vector const &c2, long double const spacing) const;
 
 };
 

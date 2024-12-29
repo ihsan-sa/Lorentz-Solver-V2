@@ -2,8 +2,12 @@ from manim import *
 import pandas as pd
 import os
 import numpy as np
+import csv
 
 def string_to_vec(str):
+
+    #extract vector from string.
+    #could use a more efficient method
     x = ""
     y = ""
     z = ""
@@ -29,6 +33,7 @@ def string_to_vec(str):
     return (x,y,z)
 
 def change_vec_mag(vec, mag):
+    #change the magnitude of a vector
     (x,y,z) = vec
     norm = np.sqrt(np.pow(x, 2) + np.pow(y,2) + np.pow(z, 2))
     sc = mag/norm
@@ -36,38 +41,43 @@ def change_vec_mag(vec, mag):
     y = y*sc
     z = z*sc
     return (x,y,z)
-class graph_data(ThreeDScene):
+class plot_particle_path(ThreeDScene):
     def construct(self):
 
+
+        # Simulation configuration and settings
         output_ctxt = True
         show_vecs = True
-
-        config_file = open("config.txt", "r")
-
-        sim_time = 0
-
         vector_scale = 0.2
 
-        data_disp = []
-        descp = Text("")
 
+        # open config file
+        config_file = open("config.txt", "r")
+
+        # base settings for the simulation
+        sim_time = 0
+
+        #for displaying the sim settings
+        data_disp = []
+        descp = Text("") #sim description
+
+        #for storing and then displaying point charges and field vectors
         point_charges = []
         uefs = []
         umfs = []
 
-        # create a triangle that is rotating
-        
-        # now we read the file and print the stats
-        title = "Simulation"
-        t2 = ""
+        title_line1 = "Simulation" #first line of the title
+        title_line2 = ""  #second line of the title
+
+        #parsing the config file
         for line in config_file:
             if(line.strip() == "#"):
                 break
             if(line.strip() == "TITLE"):
                 line = config_file.readline()
-                title = line.strip()
+                title_line1 = line.strip()
                 line = config_file.readline()
-                t2 = line.strip()
+                title_line2 = line.strip()
             if(line.strip() == "SIM"):
                 sim_time = float(config_file.readline())
             if(line.strip() == "CONFIG"):
@@ -77,7 +87,7 @@ class graph_data(ThreeDScene):
                 sim_type = line.strip()
 
 
-                descp = Text(f"{title}\n{t2} \n\n\n\t- Simulation time: {t} seconds\n\n\t- Simulation time step: {dt} seconds \n\n\t- Animation time: {sim_time} seconds\n\n\t- Numerical method: {sim_type}", font_size=20, color=BLUE)
+                descp = Text(f"{title_line1}\n{title_line2} \n\n\n\t- Simulation time: {t} seconds\n\n\t- Simulation time step: {dt} seconds \n\n\t- Animation time: {sim_time} seconds\n\n\t- Numerical method: {sim_type}", font_size=20, color=BLUE)
                 # self.play(Write(descp))
                 # self.wait(1.4)
                 # self.play(FadeOut(descp))
@@ -166,9 +176,11 @@ class graph_data(ThreeDScene):
                 # self.wait(1.2)
                 # self.play(FadeOut(uef_txt))
 
+        #always show the description
         self.play(Write(descp))
         self.wait(1.4)
 
+        #display the remaining information if necessary
         if(output_ctxt):
             g_data_disp = []
 
@@ -203,33 +215,40 @@ class graph_data(ThreeDScene):
         else:
             self.play(FadeOut(descp))   
 
+        #run the c++ simulation
         os.system("./a.out")
 
-        file = pd.read_csv("data.csv")
+        #read the c++ simulation output
+        data_file = pd.read_csv("data.csv")
 
-        cols = file.columns
+        #get the number of columns and determine the number of particles
+        cols = data_file.columns
         n_cols = len(cols) - 1
         n_particles = int(n_cols/3)
         print(f"particles: {n_particles}")
 
+        #init arrays for storing all the data
         all_x_vals = []
         all_y_vals = []
         all_z_vals = []
 
+        #init vars to store max data points 
         max_x = 0
         max_y = 0
         max_z = 0
 
+        #parse and store all the particle data
         for i in range(n_particles):
             print(f"Creating vals: {i}")
-            all_x_vals.append(file[f'x{i}'])
-            all_y_vals.append(file[f'y{i}'])
-            all_z_vals.append(file[f'z{i}'])
+            all_x_vals.append(data_file[f'x{i}'])
+            all_y_vals.append(data_file[f'y{i}'])
+            all_z_vals.append(data_file[f'z{i}'])
 
             max_x = max(max_x, np.absolute(all_x_vals[i].max()), np.absolute(all_x_vals[i].min()))
             max_y = max(max_y, np.absolute(all_y_vals[i].max()), np.absolute(all_y_vals[i].min()))
             max_z = max(max_z, np.absolute(all_z_vals[i].max()), np.absolute(all_z_vals[i].min()))
         
+        #update maxima for the displayed SPC and vector
         for spc in point_charges:
             (x, y, z) = spc
             print(spc)
@@ -253,35 +272,45 @@ class graph_data(ThreeDScene):
                 max_y = max(max_y, y*2)
                 max_z = max(max_z, z*2)
 
-        print(f"done making vals. max_x: {max_x} max_y: {max_y} max_z: {max_z}")
-        max_x = 1.2 * max_x
-        max_y = 1.2* max_y
-        max_z = 1.2 * max_z
 
+        print(f"done making vals. max_x: {max_x} max_y: {max_y} max_z: {max_z}") #user update
+
+        #add a small buffer
+        buffer = 1.2
+        max_x = buffer * max_x
+        max_y = buffer * max_y
+        max_z = buffer * max_z
+
+        #manage very small maximum values
         max_x = max(max_x, 0.01)
         max_y = max(max_y, 0.01)
         max_z = max(max_z, 0.01)
 
+        #determine the maximum value of all three
         max_coord = max(max_x,  max_y, max_z)
 
+        #create the 3D axes
         axes = ThreeDAxes(
             x_range=[-max_x,max_x,0.001],
             y_range=[-max_y,max_y,0.001],
             z_range=[-max_z,max_z ,0.001],
             axis_config={"include_numbers": False, "include_ticks": False}
         )
-        print("Done making axes")
 
-        
+        print("Done making axes") #user update
 
-
+        #create the axes labels
         labels = axes.get_axis_labels(
             x_label="x",
             y_label='y',
             z_label='z'
         )
+
+        #init the arrays to store points and lines
         all_points = []
         all_lines = []
+
+        #for each particle, extract all points and create lines and store in the arrays
         for i in range(n_particles):
             all_points.append([axes.c2p(x,y,z) for x,y,z in zip(all_x_vals[i], all_y_vals[i], all_z_vals[i])])
             all_lines.append(VMobject())
@@ -291,18 +320,18 @@ class graph_data(ThreeDScene):
                 color = interpolate_color(RED, BLUE, i/(n_particles-1))
             all_lines[i].set_color(color)
 
-        # line = VMobject()
-        # line.set_points_smoothly(points)
-        # line.set_color(RED)
+        #move camera to first position
         self.move_camera(phi=70*DEGREES,theta=-45*DEGREES, run_time = 0.01)
 
+        #begin rotation about the z-axis
         self.begin_ambient_camera_rotation(
             rate=PI/5,about="theta"
         )
 
-
+        #display the axes and labels
         self.play(FadeIn(axes), FadeIn(labels))
 
+        #display the field vectors if wanted
         if(show_vecs):
             for uef in uefs:
                 vec = Vector(direction=axes.c2p(*change_vec_mag(uef, vector_scale*max_coord)), color = ORANGE)
@@ -312,15 +341,112 @@ class graph_data(ThreeDScene):
                 vec = Vector(direction=axes.c2p(*change_vec_mag(umf, vector_scale*max_coord)), color = BLUE)
                 self.add(vec)
 
+        #display the point charges
         for spc in point_charges:
             point = Dot3D(point=axes.c2p(*spc), color=GREEN, radius=0.05)
             self.add(point)
 
+        #draw the particle path
         self.play(
             *[Write(all_lines[i]) for i in range(n_particles)],
             run_time = sim_time)
         
-        # self.move_camera(phi=70*DEGREES, theta=2*PI, run_time=4, rate_func = rate_functions.linear)
+        #keep rotating for a bit longer
         self.wait(5)
 
-        print(file)
+        #print data_file for debugging
+        print(data_file)
+
+
+##TESTS USING AI -- WORKING TOWARDS IMPLEMENTING THIS DIFFERENTLY
+
+class disp_b_vec_field(ThreeDScene):
+    def construct(self):
+        print("bfield")
+
+        def load_csv_to_dict(csv_file):
+            field_data = {}
+            with open(csv_file, "r") as csvfile:
+                reader = csv.DictReader(csvfile)
+                for row in reader:
+                    x, y, z = float(row["x"]), float(row["y"]), float(row["z"])
+                    xf, yf, zf = float(row["xf"]), float(row["yf"]), float(row["zf"])
+                    field_data[(x, y, z)] = np.array([xf, yf, zf])
+            return field_data
+
+        # Define the function to retrieve field vectors and convert them to Manim directions
+        def csv_field_function_with_directions(pos, field_data):
+            key = (round(pos[0], 1), round(pos[1], 1), round(pos[2], 1))  # Round for match
+            vector = field_data.get(key, np.array([0, 0, 0]))  # Default to zero vector if not found
+            return vector[0] * RIGHT + vector[1] * UP + vector[2] * OUT
+
+        # Example usage
+        field_data = load_csv_to_dict("data.csv")  # Load the CSV data
+        field_func = lambda pos: csv_field_function_with_directions(pos, field_data)  # Define the lambda
+
+                
+        func = lambda pos: np.sin(pos[1]) * RIGHT + np.cos(pos[0]) * UP + np.tan(pos[2]) *LEFT 
+
+        axes = ThreeDAxes(
+            x_range=[-2,2,0.1],
+            y_range=[-2,2,0.1],
+            z_range=[-2,2,0.1]
+        )
+        field = ArrowVectorField(
+            field_func, 
+            three_dimensions=True, 
+            x_range=[-2, 1, 0.2],  # Include the full range of your data
+            y_range=[-2, 1, 0.2],
+            z_range=[-2, 1, 0.2]
+        )        
+        self.move_camera(phi=75 * DEGREES, theta=30 * DEGREES, zoom=1.3)
+
+        self.begin_ambient_camera_rotation(
+            rate=PI/5,about="theta"
+        )
+        self.add(axes)
+        self.play(Write(field))
+        self.wait()
+
+
+class VectorField3D(ThreeDScene):
+    def construct(self):
+        # Set up the axes
+        axes = ThreeDAxes(
+            x_range=[-3, 3, 1],
+            y_range=[-3, 3, 1],
+            z_range=[-100, 100, 1],
+        )
+        self.add(axes)
+        self.move_camera(phi=75 * DEGREES, theta=30 * DEGREES, zoom=0.8)
+
+        # Read the CSV file and add arrows
+        with open("data.csv", "r") as csvfile:
+            reader = csv.DictReader(csvfile)
+            for row in reader:
+                # Parse position and vector components
+                x, y, z = float(row["x"]), float(row["y"]), float(row["z"])
+                xf, yf, zf = float(row["xf"]), float(row["yf"]), float(row["zf"])
+
+                scaling_factor = 1
+                scaled_vector = scaling_factor * np.array([xf, yf, zf])
+                if np.linalg.norm(scaled_vector) == 0:
+                    continue
+
+                start = axes.c2p(x,y,z)
+                end = axes.c2p(x + scaled_vector[0], y + scaled_vector[1], z + scaled_vector[2])
+
+                # Create an arrow for the vector
+                arrow = Arrow3D(
+                    start=start,
+                    end=end,
+                    color=BLUE,
+                    thickness=0.01,
+                )
+                self.add(arrow)
+
+        # Set camera angle
+        self.begin_ambient_camera_rotation(
+            rate=PI/5,about="theta"
+        )
+        self.wait(10)
