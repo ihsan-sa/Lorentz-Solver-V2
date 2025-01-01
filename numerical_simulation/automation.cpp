@@ -134,6 +134,10 @@ void parse_config(long double &t, long double &dt, Vector &c1, Vector &c2, long 
             cfig_num_method = rk4_hybrid;
         }else if(method_type == "Euler"){
             cfig_num_method = euler;
+        }else{
+            throw std::domain_error{
+                "ERR: Provide simulation method (eg. RK4)"
+            };
         }
     }else if(sim_type == "B Field"){
         cfig_sim_type = b_field;

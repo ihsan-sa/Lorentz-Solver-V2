@@ -46,7 +46,7 @@ class plot_particle_path(ThreeDScene):
 
 
         # Simulation configuration and settings
-        output_ctxt = True
+        output_ctxt = False
         show_vecs = True
         vector_scale = 0.2
 
@@ -81,10 +81,13 @@ class plot_particle_path(ThreeDScene):
             if(line.strip() == "SIM"):
                 sim_time = float(config_file.readline())
             if(line.strip() == "CONFIG"):
-                t = float(config_file.readline())
-                dt = float(config_file.readline())
                 line = config_file.readline()
                 sim_type = line.strip()
+                t = float(config_file.readline())
+                line = config_file.readline()
+                dt = float(line)
+                
+                
 
 
                 descp = Text(f"{title_line1}\n{title_line2} \n\n\n\t- Simulation time: {t} seconds\n\n\t- Simulation time step: {dt} seconds \n\n\t- Animation time: {sim_time} seconds\n\n\t- Numerical method: {sim_type}", font_size=20, color=BLUE)
@@ -216,7 +219,7 @@ class plot_particle_path(ThreeDScene):
             self.play(FadeOut(descp))   
 
         #run the c++ simulation
-        os.system("./a.out")
+        os.system("./compiled_files/compiled_solver")
 
         #read the c++ simulation output
         data_file = pd.read_csv("data.csv")

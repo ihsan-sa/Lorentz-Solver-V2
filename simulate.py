@@ -14,6 +14,6 @@ for line in config_file:
 
 
 if(sim_type == "Lorentz Motion"):
-    os.system("manim -pql scene.py plot_particle_path")
+    os.system("manim -pql ./animation/scene.py plot_particle_path")
 elif(sim_type == "B Field"):
-    os.system("manim -pql scene.py disp_b_vec_field")
+    os.system("manim -pql ./animation/scene.py disp_b_vec_field")
