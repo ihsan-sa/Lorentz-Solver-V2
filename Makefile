@@ -1,5 +1,4 @@
 
-
 compiled_solver: ./numerical_simulation/main.cpp ./numerical_simulation/vector.cpp ./numerical_simulation/object.cpp ./numerical_simulation/space.cpp ./numerical_simulation/automation.cpp ./numerical_simulation/config.cpp
 
 	mkdir compiled_files
@@ -19,5 +18,15 @@ compiled_solver: ./numerical_simulation/main.cpp ./numerical_simulation/vector.c
 
 clean: 
 	rm -rf compiled_files
-	rm data.csv
+	make rm_csv
+	make rm_out
 	
+rm_out: a.out
+	rm a.out
+
+rm_csv: data.csv
+	rm data.csv
+
+mv_config: *.txt
+	mkdir config_files
+	mv *.txt config_files
