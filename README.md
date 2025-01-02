@@ -7,19 +7,23 @@ See the [*Examples* section](#examples) for images and videos.
 
 # Examples
 
-Here is an example video of a simulation with several particles in a complex space.
-https://github.com/user-attachments/assets/79137115-c350-4835-b776-b185a7a2faeb
-
+### Particle motion simulation 1 
 
 https://github.com/user-attachments/assets/a52f1ddd-b384-40a9-a1bc-44f1a0ce4402
 
+### Particle motion simulation 2 - No intro
+
+https://github.com/user-attachments/assets/5eab858d-2724-40e9-9c16-1d35911e4cc2
+
+### E x B drift simuulation
 
 https://github.com/user-attachments/assets/3ef07e9f-b105-45bf-8fdb-ad0d5772c3bd
 
+### grad(B) drift simulation
 
 https://github.com/user-attachments/assets/281a55c2-c2e3-4e90-99e2-dc70d91bdf94
 
-
+### Rudimentary visualization of grad(B) simulation B vector field.  
 
 https://github.com/user-attachments/assets/6f529941-3a40-4a7d-953a-154703d1cfff
 
