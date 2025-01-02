@@ -1,4 +1,4 @@
-﻿# Lorentz-Solver-V2
+# Lorentz-Solver-V2
 
 This Lorentz solver is designed to compute the paths of particles in complex custom electromagnetic spaces and then animate them using the Manim library for maximum clarity.  
 
@@ -28,9 +28,12 @@ Next, the python code reads both the config and data files and animates the data
 # Physics and math
 
 The equation for the Lorentz force on a particle moving through an electric and magnetic field is:
-$$
-F = q(\vector{E} + \vector{v} \cross \vector{B})
-$$
+```math
+F = q(\vec{E} + \vec{v} \times \vec{B})
+```
+This equation is numerically integrated using various techniques, an RK4-euler hybrid solution being the most successful in this simulation.  
+The code for this simulation can be found in the `void Space::simulate(long double const t, long double const dt) const` function in `./numerical_simulation/space.cpp`.
+
 
 # Config file
 
