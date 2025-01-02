@@ -4,6 +4,25 @@ This Lorentz solver is designed to compute the paths of particles in complex cus
 
 See the [*Examples* section](#examples) for images and videos.
 
+
+# Examples
+
+Here is an example video of a simulation with several particles in a complex space.
+https://github.com/user-attachments/assets/79137115-c350-4835-b776-b185a7a2faeb
+
+
+https://github.com/user-attachments/assets/a52f1ddd-b384-40a9-a1bc-44f1a0ce4402
+
+
+https://github.com/user-attachments/assets/3ef07e9f-b105-45bf-8fdb-ad0d5772c3bd
+
+
+https://github.com/user-attachments/assets/281a55c2-c2e3-4e90-99e2-dc70d91bdf94
+
+
+
+https://github.com/user-attachments/assets/6f529941-3a40-4a7d-953a-154703d1cfff
+
 # Dependencies and installation
 
 This project requires a number of dependencies:  
@@ -329,10 +348,4 @@ For a B Field simulation, run:
 ```
 manim -pqh scene.py disp_b_vec_field
 ```
-
-# Examples
-
-Here is an example video of a simulation with several particles in a complex space.
-https://github.com/user-attachments/assets/79137115-c350-4835-b776-b185a7a2faeb
-
 
