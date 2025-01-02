@@ -45,7 +45,7 @@ CONFIG
 
 ```
 
-## TITLE
+## Title
 
 The `TITLE` section is comprised of two titles lines:
 ```
@@ -62,7 +62,7 @@ Simulation of the ExB drift of a particle
 in an electric and magnetic field
 ```
 
-## SIM
+## Sim animation settings
 
 The `SIM` section contains one parameter, the animation time. For more animation settings, see the animation section.
 ```
@@ -77,7 +77,7 @@ SIM
 10
 ```
 
-## CONFIG
+## Numerical sim config
 
 ### General structure
 
