@@ -135,6 +135,23 @@ B Field
 
 ### Particle 
 
+A *particle* has *initial position*, *initial velocity*, *charge* and *mass* (all in standard SI units). Hence,  it is defined as follows:
+```
+P
+%% position vector
+%% velocity vector
+%% charge
+%% mass
+```
+eg.
+```
+P
+[0,0,0]
+[1,1,1]
+1.6e-19
+1.6e-32
+```
+
 ### Uniform Fields
 #### Uniform Electric Field
 #### Uniform Magnetic Field
