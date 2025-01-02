@@ -2,7 +2,7 @@
 
 This Lorentz solver is designed to compute the paths of particles in complex custom electromagnetic spaces and then animate them using the Manim library for maximum clarity.  
 
-See the [examples section](#examples) for images and videos.
+See the [*Examples* section](#examples) for images and videos.
 
 # Dependencies and installation
 
@@ -17,13 +17,20 @@ Compiled files are stored in the `compiled_files` and additional text files are 
 # User instructions
 
 1. Run `make`
-2. Update the `config.txt` file. Specific instructions will be covered later in this document. There is a simple config file provided for first simulations.
+2. Update the `config.txt` file. Specific instructions will be covered in the [*Config file* section](#config-file). There is a simple config file provided for first simulations.
 3. Run `./simulate.py` to run the numerical simulation and animate using Manim.
 4. The resulting video can be found in the `media/videos/scene/480p15`
 
-The C++ code reads the config file and runs the appropriate simulation. The electric and magnetic field strengths are computed at each particles' position, and then the Lorentz equation is integrated to determine the new velocity and position of each particle. The numerical integration is performed using the algorithm specified in the config file (see later section). The particle positions are logged to the `data.csv` file after each simulation timestep.  
+The C++ code reads the config file and runs the appropriate simulation. The electric and magnetic field strengths are computed at each particles' position, and then the Lorentz equation is integrated to determine the new velocity and position of each particle (see [*Physics and math* section](#physics-and-math). The numerical integration is performed using the algorithm specified in the config file (see [*Config file* section](#config-file)). The particle positions are logged to the `data.csv` file after each simulation timestep.  
   
 Next, the python code reads both the config and data files and animates the data using Manimi, whether it be a particle motion animation or E or B vector field visualization.  
+
+# Physics and math
+
+The equation for the Lorentz force on a particle moving through an electric and magnetic field is:
+$$
+F = q(\vector{E} + \vector{v} \cross \vector{B})
+$$
 
 # Config file
 
@@ -66,7 +73,7 @@ in an electric and magnetic field
 
 ## Sim animation settings
 
-The `SIM` section contains one parameter, the animation time. For more animation settings, see the animation section.
+The `SIM` section contains one parameter, the animation time. For more animation settings, see the [*Animation* section](#animation).
 ```
 SIM
 %% animation time
