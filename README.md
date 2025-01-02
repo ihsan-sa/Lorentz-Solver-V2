@@ -1,7 +1,8 @@
 ﻿# Lorentz-Solver-V2
 
 
-## Dependencies and installation
+
+# Dependencies and installation
 
 This project requires a number of dependencies:  
 - Manim Community dependencies, including `manim` python library, `ffmpeg` and `Python`. Installation of these packages is attempted when `make` is run, but manual installation may be required.
@@ -11,7 +12,7 @@ This project requires a number of dependencies:
 To run the default installation and compilation, run `make`. To clean up the environment, run `make clean`.   
 Compiled files are stored in the `compiled_files` and additional text files are stored in `other_config_files`.  
 
-## User instructions
+# User instructions
 
 1. Run `make`
 2. Update the `config.txt` file. Specific instructions will be covered later in this document.
@@ -22,9 +23,9 @@ The C++ code reads the config file and runs the appropriate simulation. The elec
   
 Next, the python code reads both the config and data files and animates the data using Manimi, whether it be a particle motion animation or E or B vector field visualization.  
 
-## Config file
+# Config file
 
-### General structure
+## General structure
 
 The `config.txt` file has various sections, denoted by tags. The structure is shown below. The `%%` is used to denote a comment, although this is not supported in the solver.
 
@@ -44,7 +45,7 @@ CONFIG
 
 ```
 
-### TITLE
+## TITLE
 
 The `TITLE` section is comprised of two titles lines:
 ```
@@ -61,7 +62,7 @@ Simulation of the ExB drift of a particle
 in an electric and magnetic field
 ```
 
-### SIM
+## SIM
 
 The `SIM` section contains one parameter, the animation time.
 ```
@@ -76,9 +77,9 @@ SIM
 10
 ```
 
-### CONFIG
+## CONFIG
 
-#### General structure
+### General structure
 
 The `CONFIG` section contains information about the numerical simulation. 
 ```
@@ -91,7 +92,7 @@ The simulation type can be:
 - `Lorentz Motion`, which computes the path of particles in the specified space.
 - `B Field`, which computes the magnetic vector field in the specified region by logging the field vectors in the space.
 
-#### Lorentz Motion
+### Lorentz Motion
 
 ```
 CONFIG
@@ -112,7 +113,7 @@ Lorentz Motion
 RK4 Euler
 ```
 
-#### B Field
+### B Field
 ```
 CONFIG
 B Field
@@ -130,15 +131,15 @@ B Field
 1
 ```
 
-### Object definitions
+## Object definitions
 
-#### Particle 
+### Particle 
 
-#### Uniform Fields
-##### Uniform Electric Field
-##### Uniform Magnetic Field
+### Uniform Fields
+#### Uniform Electric Field
+#### Uniform Magnetic Field
 
-#### Static Point Charge
+### Static Point Charge
 
 
 
