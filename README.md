@@ -1,6 +1,8 @@
 ﻿# Lorentz-Solver-V2
 
-This Lorentz solver is designed to compute the paths of particles in complex custom electromagnetic spaces and then animate them using the Manim library for maximum clarity.
+This Lorentz solver is designed to compute the paths of particles in complex custom electromagnetic spaces and then animate them using the Manim library for maximum clarity.  
+
+See the [examples section](#examples) for images and videos.
 
 # Dependencies and installation
 
@@ -15,7 +17,7 @@ Compiled files are stored in the `compiled_files` and additional text files are 
 # User instructions
 
 1. Run `make`
-2. Update the `config.txt` file. Specific instructions will be covered later in this document.
+2. Update the `config.txt` file. Specific instructions will be covered later in this document. There is a simple config file provided for first simulations.
 3. Run `./simulate.py` to run the numerical simulation and animate using Manim.
 4. The resulting video can be found in the `media/videos/scene/480p15`
 
