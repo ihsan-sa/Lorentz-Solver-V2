@@ -1,6 +1,6 @@
 ﻿# Lorentz-Solver-V2
 
-
+This Lorentz solver is designed to compute the paths of particles in complex custom electromagnetic spaces and then animate them using the Manim library for maximum clarity.
 
 # Dependencies and installation
 
@@ -64,7 +64,7 @@ in an electric and magnetic field
 
 ## SIM
 
-The `SIM` section contains one parameter, the animation time.
+The `SIM` section contains one parameter, the animation time. For more animation settings, see the animation section.
 ```
 SIM
 %% animation time
@@ -91,7 +91,9 @@ CONFIG
 The simulation type can be:
 - `Lorentz Motion`, which computes the path of particles in the specified space.
 - `B Field`, which computes the magnetic vector field in the specified region by logging the field vectors in the space.
+- `E Field`, which computes the electric vector field in the specified region by logging the field vectors in the space.
 
+Note: The `B Field` and `E Field` simulations are still under development and are using very crude patched together experimental code by me, various online sources and AI. This is purely experimental and will be re-written by me once experimentation is complete. All other code is written by me.
 ### Lorentz Motion
 
 ```
@@ -131,9 +133,49 @@ B Field
 1
 ```
 
+### E Field
+
+Coming soon.
+
+```
+CONFIG
+E Field
+%% coordinates of one corner of the space
+%% coordinates of the opposite corner of the space
+%% Step size between vectors in 3D space
+```
+
+eg.
+```
+CONFIG
+E Field
+[-1,-1,-1]
+[2,2,2]
+0.5
+```
+
 ## Object definitions
 
-### Particle 
+There are a number of objects that can be added to a simulation space:
+- Particle (P)
+- Uniform Fields  
+    - Uniform Magnetic Field (UMF)
+    - Uniform Electric Field (UEF)
+- Static Point charge (SPC)
+- Sectioned Uniform Fields   
+    - Sectioned Uniform Magnetic Field (SUMF)
+    - Sectioned Uniform Electric Field (SUEF)
+- Wire (W) -- coming soon
+- Wire Loop (WL) -- coming soon
+- Magnetic dipole (MD) -- coming soono
+  
+
+Later, more complex premade combinations of objects will be added. For example: 
+- Tokamak Fusion Reactor
+
+
+
+### Particle (P)
 
 A *particle* has *initial position*, *initial velocity*, *charge* and *mass* (all in standard SI units). Hence,  it is defined as follows:
 ```
@@ -149,51 +191,136 @@ P
 [0,0,0]
 [1,1,1]
 1.6e-19
-1.6e-32
+1.67e-27
 ```
 
 ### Uniform Fields
-#### Uniform Electric Field
-#### Uniform Magnetic Field
+#### Uniform Magnetic Field (UMF)
+```
+UMF
+%% field vector
+```
+Ensure to account for magnitude when determining the field vector   
+  
+eg.
+```
+UMF
+[0,0,1]
+```
+#### Uniform Electric Field (UEF)
+```
+UEF
+%% field vector
+```
+Ensure to account for magnitude when determining the field vector   
+  
+eg.
+```
+UEF
+[0,1,0]
+```
 
-### Static Point Charge
+### Static Point Charge (SPC)
 
+Definition of a SPC is similar to a particle, but does not include *velocity* or *mass*.
+```
+SPC
+%% position vector
+%% charge
+```
 
+eg.
+```
+SPC
+[3,0,0]
+-6e-6
+```
 
+### Sectioned Uniform Fields
 
+Uniform fields can be restricted to a section in space. These are called *sectioned* uniform fields.   
+For the moment, the spaces are computed based on the larges rectangular prism formed by the corners, but this will be updated to work for more complex 3D shapes.
 
+#### Sectioned Uniform Magnetic Field (SUMF)
 
+```
+SUMF
+%% field vector
+%% 8 coordinates of the coordinates of the space
+```
+eg.
+```
+SUMF
+[0,0,10]
+[-1,-1,-1]
+[0,1,1]
+[0,0,0]
+[0,0,0]
+[0,0,0]
+[0,0,0]
+[0,0,0]
+[0,0,0]
+```
 
+#### Sectioned Uniform Electric Field (SUEF)
 
+Coming soon.
 
+```
+SUEF
+%% field vector
+%% 8 coordinates of the coordinates of the space
+```
+eg.
+```
+SUMF
+[0,2,1]
+[-1,-2,-1]
+[0,1,2]
+[0,0,0]
+[0,0,0]
+[0,0,0]
+[0,0,0]
+[0,0,0]
+[0,0,0]
+```
 
+# Animation
 
+## Display configurations
 
+There exist additional animation settings available in the `scene.py` file in the `./animation` folder. Some familiarity with Manim Community may be useful. 
+User configuration is found under the `# Simulation configuration and settings` comment at the top of the `plot_particle_path` class and other scene classes. 
+  
+The start of each animation begins with an optional presentation of the objects. The code will read the config file and display the object settings two by two, although this will cause the animation to take longer.  
 
-There are various codes for the different objects  
+This can be toggled on and off by changing `output_ctxt` to `output_ctxt = True` and vice-versa. 
+
+When uniform fields are added, field vectors can be shown (blue for magnetic and orange for electric).  
+This can be toggled on and off my changing `show_vecs` and the scale of the vectors can be adjusted via `vector_scale`.  
+
+By default, the object presentation is switched off and the vectors are displayed with 0.2 scale.
+
+## Higher quality rendering
+
+For higher quality rendering, consult Manim Community's documentation. You can run the generic command:   
+```
+manim -pqh scene.py [class_name]
+```
+
+After running `make` and updating `config.txt`, you will need to run the execuatable `./compiled_files/compiled_solver`.
+Then, if you are running a Lorentz Motion simulation, run the command:
+```
+manim -pqh scene.py plot_particle_path
+```
+For a B Field simulation, run:
+```
+manim -pqh scene.py disp_b_vec_field
+```
+
+# Examples
+
+Here is an example video of a simulation with several particles in a complex space.
 https://github.com/user-attachments/assets/79137115-c350-4835-b776-b185a7a2faeb
 
 
-config.txt file setup:
-  
-CONFIG  %config header%  
-%simulation time%  
-%simulation step%  
-  
-P   %particle header%  
-%position vector - eg [1,0,0]%  
-%velocity vector%  
-%charge%  
-%mass%  
-  
-UMF  %uniform magnetic field header%  
-%field vector%  
-  
-UEF  %uniform electric field header%  
-%field vector%  
-    
-SPC  %static point charge header%  
-%position vector%  
-%charge%  
-  
-\# %means end%  
