@@ -14,6 +14,9 @@ compiled_solver: ./numerical_simulation/main.cpp ./numerical_simulation/vector.c
 
 	pip install manim
 	pip install ffmpeg
+	pip install pandas
+	pip install numpy
+	pip install csv
 	
 
 clean: 
