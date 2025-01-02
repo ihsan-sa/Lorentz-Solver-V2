@@ -4,6 +4,13 @@ This Lorentz solver is designed to compute the paths of particles in complex cus
 
 See the [*Examples* section](#examples) for images and videos.
 
+**Contents**
+1. [Examples](#examples)
+2. [Dependencies and installation](#dependencies-and-installation)
+3. [User instructions](#user-instructions)
+4. [Physics and math](#physics-and-math)
+5. [Config file](#config-file)
+6. [Animation](#animation)
 
 # Examples
 
