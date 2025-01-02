@@ -17,16 +17,10 @@ compiled_solver: ./numerical_simulation/main.cpp ./numerical_simulation/vector.c
 	
 
 clean: 
-	rm -rf compiled_files
-	make rm_csv
-	make rm_out
+	-rm -rf compiled_files
+	-mkdir other_config_files
+	-mv *.txt other_config_files
+	-mv ./other_config_files/config.txt .
+	-rm data.csv
+	-rm a.out
 	
-rm_out: a.out
-	rm a.out
-
-rm_csv: data.csv
-	rm data.csv
-
-mv_config: *.txt
-	mkdir config_files
-	mv *.txt config_files
