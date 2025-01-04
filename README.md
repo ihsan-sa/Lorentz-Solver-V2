@@ -69,10 +69,14 @@ The code for this simulation can be found in the `void Space::simulate(long doub
 
 ## General structure
 
-The `config.txt` file has various sections, denoted by tags. The structure is shown below. The `%%` is used to denote a comment, although this is not supported in the solver.
+The `config.txt` file has various sections, denoted by tags. The structure is shown below. The `%%` is used to denote a comment, although this is not supported in the solver.   
+Note: It is usually best to leave 2-3 lines between tags.
 
 ```
 TITLE
+%% parameters
+
+AUTHOR
 %% parameters
 
 SIM
@@ -102,6 +106,19 @@ eg.
 TITLE
 Simulation of the ExB drift of a particle
 in an electric and magnetic field
+```
+
+## Author
+The author's name is displayed in the bottom right corner of the screen for the entire animation.
+```
+AUTHOR
+%% name
+
+```
+eg.
+```
+AUTHOR
+Ihsan
 ```
 
 ## Sim animation settings
