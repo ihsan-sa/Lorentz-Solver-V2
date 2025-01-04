@@ -26,9 +26,9 @@ def string_to_vec(str):
         z += str[str_idx]
         str_idx = str_idx + 1
 
-    x = int(x)
-    y = int(y)
-    z = int(z)
+    x = float(x)
+    y = float(y)
+    z = float(z)
     
     return (x,y,z)
 
@@ -48,7 +48,7 @@ class plot_particle_path(ThreeDScene):
         # Simulation configuration and settings
         output_ctxt = False
         show_vecs = True
-        vector_scale = 0.2
+        vector_scale = 0.03
 
 
         # open config file
@@ -59,7 +59,8 @@ class plot_particle_path(ThreeDScene):
 
         #for displaying the sim settings
         data_disp = []
-        descp = Text("") #sim description
+        descp = Text("") # sim description
+        author = Text("", font_size=1) # author
 
         #for storing and then displaying point charges and field vectors
         point_charges = []
@@ -78,6 +79,10 @@ class plot_particle_path(ThreeDScene):
                 title_line1 = line.strip()
                 line = config_file.readline()
                 title_line2 = line.strip()
+            if(line.strip() == "AUTHOR"):
+                line = config_file.readline()
+                author = Text(line.strip(), font_size=20)
+                self.add_fixed_in_frame_mobjects(author)
             if(line.strip() == "SIM"):
                 sim_time = float(config_file.readline())
             if(line.strip() == "CONFIG"):
@@ -86,11 +91,13 @@ class plot_particle_path(ThreeDScene):
                 t = float(config_file.readline())
                 line = config_file.readline()
                 dt = float(line)
+                line = config_file.readline()
+                num_method = line.strip()
                 
                 
 
 
-                descp = Text(f"{title_line1}\n{title_line2} \n\n\n\t- Simulation time: {t} seconds\n\n\t- Simulation time step: {dt} seconds \n\n\t- Animation time: {sim_time} seconds\n\n\t- Numerical method: {sim_type}", font_size=20, color=BLUE)
+                descp = Text(f"{title_line1}\n{title_line2} \n\n\n\t- Simulation Type: {sim_type} \n\n\t- Simulation time: {t} seconds\n\n\t- Simulation time step: {dt} seconds \n\n\t- Animation time: {sim_time} seconds\n\n\t- Numerical method: {num_method}", font_size=20, color=BLUE)
                 # self.play(Write(descp))
                 # self.wait(1.4)
                 # self.play(FadeOut(descp))
@@ -139,7 +146,7 @@ class plot_particle_path(ThreeDScene):
                 # self.wait(1.2)
                 # self.play(FadeOut(umf_txt))
             if(line.strip() == "SUMF"):
-                print("umf")
+                print("sumf")
                 line = config_file.readline()
                 field = line.strip()
 
@@ -180,7 +187,7 @@ class plot_particle_path(ThreeDScene):
                 # self.play(FadeOut(uef_txt))
 
         #always show the description
-        self.play(Write(descp))
+        self.play(Write(descp), Write(author.to_corner(DR)))
         self.wait(1.4)
 
         #display the remaining information if necessary
@@ -223,7 +230,7 @@ class plot_particle_path(ThreeDScene):
 
         #read the c++ simulation output
         data_file = pd.read_csv("data.csv")
-
+        
         #get the number of columns and determine the number of particles
         cols = data_file.columns
         n_cols = len(cols) - 1
@@ -247,17 +254,17 @@ class plot_particle_path(ThreeDScene):
             all_y_vals.append(data_file[f'y{i}'])
             all_z_vals.append(data_file[f'z{i}'])
 
-            max_x = max(max_x, np.absolute(all_x_vals[i].max()), np.absolute(all_x_vals[i].min()))
-            max_y = max(max_y, np.absolute(all_y_vals[i].max()), np.absolute(all_y_vals[i].min()))
-            max_z = max(max_z, np.absolute(all_z_vals[i].max()), np.absolute(all_z_vals[i].min()))
+            max_x = max(max_x, np.abs(all_x_vals[i].max()), np.abs(all_x_vals[i].min()))
+            max_y = max(max_y, np.abs(all_y_vals[i].max()), np.abs(all_y_vals[i].min()))
+            max_z = max(max_z, np.abs(all_z_vals[i].max()), np.abs(all_z_vals[i].min()))
         
         #update maxima for the displayed SPC and vector
         for spc in point_charges:
             (x, y, z) = spc
             print(spc)
-            max_x = max(max_x, np.absolute(x))
-            max_y = max(max_y, np.absolute(y))
-            max_z = max(max_z, np.absolute(z))
+            max_x = max(max_x, np.abs(x))
+            max_y = max(max_y, np.abs(y))
+            max_z = max(max_z, np.abs(z))
 
         if(show_vecs):
             max_coord = max(max_x,  max_y, max_z)
@@ -291,6 +298,16 @@ class plot_particle_path(ThreeDScene):
 
         #determine the maximum value of all three
         max_coord = max(max_x,  max_y, max_z)
+
+        #create a scaling factor if the coordinates are too large. Otherwise manim breaks
+        # NOT in use at the moment
+        # sc_fctr = 1
+        # if(max_coord > 10):
+        #     sc_fctr = 10/max_coord
+
+        # max_x *= sc_fctr
+        # max_y *= sc_fctr
+        # max_z *= sc_fctr
 
         #create the 3D axes
         axes = ThreeDAxes(
