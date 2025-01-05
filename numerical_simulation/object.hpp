@@ -7,6 +7,8 @@
 //constants etc
 
 #define K 8.987551787e9
+#define MU_0 1.256637061e-6
+#define MU_0_DIV_4PI 1e-7
 
 //class definitions
 
@@ -16,6 +18,8 @@ class UEF; //uniform electric field
 class UMF; //uniform magnetic field
 
 class SUMF; //sectioned uniform magnetic field
+
+class Wire;
 
 class SPC; //static point charge
 
@@ -96,7 +100,33 @@ public:
     friend std::ostream &operator<<(std::ostream &out, SUMF const &rhs);
 };
 
+class Wire : public Object{
+    Vector org_;
+    Vector dir_; //unit vector
+    long double i_wire_;
+public: 
 
+    //constructor
+    Wire();
+    Wire(Vector const &org, Vector const &dir, long double const i_wire);
+    ~Wire();
+
+    Wire(Wire const &org);
+    Wire(Wire &&org);
+
+    Vector org() const;
+    Vector dir() const;
+    long double i_wire() const;
+
+
+    bool is_particle() const override; //returns true if it is a particle
+    Vector e_field(Vector const &pos) const override; //returns the electric field vector at a point due to that object
+    Vector b_field(Vector const &pos) const override; //returns the magnetic field vector at a point due to that object
+
+    void print() const override;
+    friend std::ostream &operator<<(std::ostream &out, Wire const &rhs);
+
+};
 
 class SPC : public Object{
     Vector pos_;

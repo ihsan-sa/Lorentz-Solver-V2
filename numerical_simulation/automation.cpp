@@ -151,6 +151,18 @@ void parse_config(long double &t, long double &dt, Vector &c1, Vector &c2, long 
     line_idx++;
 }
 
+void parse_wire(Space &space, std::size_t &line_idx){
+    line_idx++;
+    Vector org{extract_vector(get_line(line_idx))};
+    line_idx++;
+    Vector dir{extract_vector(get_line(line_idx))};
+    line_idx++;
+    long double i_wire{std::stold(get_line(line_idx))};
+
+    Wire *p_wire{new Wire{org, dir, i_wire}};
+    space.add({p_wire});
+    line_idx++;
+}
 
 void run_simulation(){
     Space sim_space{};
@@ -188,6 +200,8 @@ void run_simulation(){
         }else if(line == "SPC"){
             // std::cout<<"SPC\n";
             parse_SPC(sim_space, line_idx);
+        }else if(line == "W"){
+            parse_wire(sim_space, line_idx);
         }
     
         line_idx ++;
@@ -204,6 +218,7 @@ void run_simulation(){
         }
         sim_space.simulate(t, dt);
     }else if(cfig_sim_type == b_field){
+        std::cout<<"Running bfield sim: \n\t"<<c1<<"\n\t"<<c2<<"\n\t"<<spacing<<'\n';
         sim_space.b_vector_field(c1, c2, spacing);
     }
 }

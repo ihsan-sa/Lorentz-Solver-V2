@@ -219,6 +219,100 @@ void SUMF::print() const{
     std::cout<<std::endl;
 }
 
+//WIRE
+
+Wire::Wire() :
+org_{Vector{}}, 
+dir_{Vector{}},
+i_wire_{0}{
+    //empty constructor
+}
+Wire::Wire(Vector const &org, Vector const &dir, long double const i_wire) :
+org_{org},
+dir_{dir}, 
+i_wire_{i_wire}{
+    dir_.normalize();
+}
+Wire::~Wire() {
+    org_ = Vector{};
+    dir_ = Vector{};
+    i_wire_ = 0;
+}
+
+Wire::Wire(Wire const &org) :
+org_{org.org()},
+dir_{org.dir()}, 
+i_wire_{org.i_wire()}
+{
+    dir_.normalize(); //ensure that the direction vector is normalized
+}
+Wire::Wire(Wire &&org) :
+org_{Vector{}},
+dir_{Vector{}}, 
+i_wire_{0}{
+    std::swap(org_, org.org_);
+    std::swap(dir_, org.dir_);
+    std::swap(i_wire_, org.i_wire_);
+}
+
+Vector Wire::org() const {
+    return org_;
+}
+Vector Wire::dir() const {
+    return dir_;
+}
+long double Wire::i_wire() const {
+    return i_wire_;
+}
+
+bool Wire::is_particle() const {
+    return false;
+}
+Vector Wire::e_field(Vector const &pos) const {
+    return Vector{};
+}
+Vector Wire::b_field(Vector const &pos) const {
+    Vector OP{pos - org()};
+    Vector R{OP.perp(dir())};
+
+    if(cfig_field_at_pt == zero && R == Vector{}){
+        return Vector{};
+    }
+
+    long double b_field_strength = (MU_0_DIV_4PI * 2)*(i_wire()/R.norm());
+
+    Vector field_dir{dir()*R.normalize()};
+    
+    //other approach
+
+    // Vector d{dir()};
+    // Vector r_hat{OP};
+    // r_hat.normalize();
+
+    // // Corrected cross product approach
+    // Vector b_field = (MU_0_DIV_4PI * i_wire()) * (d *r_hat) * (1/ (r.norm() * r.norm()));
+    // std::cout<<"Other approach: "<<b_field<<std::endl;
+
+    return b_field_strength*field_dir;
+}
+
+void Wire::print() const{
+    std::cout<<"\tWire";
+    std::cout<<"\n\t\torg: "<<org();
+    std::cout<<"\n\t\tdir: "<<dir();
+    std::cout<<"\n\t\tcurrent: "<<i_wire();
+    std::cout<<std::endl;
+}
+std::ostream &operator<<(std::ostream &out, Wire const &rhs){
+    out<<"Wire";
+    out<<"\n\torg: "<<rhs.org();
+    out<<"\n\tdir: "<<rhs.dir();
+    out<<"\n\tcurrent: "<<rhs.i_wire();
+    out<<std::endl;
+
+    return out;
+}
+
 
 //PARTICLE
 

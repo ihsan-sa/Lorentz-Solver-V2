@@ -1,19 +1,20 @@
-#include "vector.hpp"
+#include "automation.hpp"
 
 int main(){
-    Vector v1{};
-    Vector v2{};
+    
 
-    if(v1 == v2){
-        std::cout<<"Equal";
-    }else{
-        std::cout<<"Not equal";
-    }
+    Wire *p_w1 = new Wire{Vector{0,0,0}, Vector{0,0,1}, 5};
+    Wire w1 = *p_w1;
+    std::cout<<w1<<w1.b_field(Vector{0.05,0,0})<<"\n"<<w1.b_field(Vector{0.05,0,0}).norm()<<std::endl;
 
-    std::cout<<Vector::dist(v1, v2)<<" "<<v1.norm()<<std::endl;
-    v1.normalize();
-    std::cout<<v1<<" "<<v1.norm()<<std::endl;
-    v1.change_mag(10);
-    std::cout<<v1<<" "<<v1.norm()<<" "<<v1.change_mag(3)<<v1.norm()<<std::endl;
+    Wire *p_w2 = new Wire{Vector{0.1,0,0}, Vector{0,0,-1}, 7};
+    Wire w2 = *p_w2;
+    std::cout<<w2<<w2.b_field(Vector{0.05,0,0})<<"\n"<<w2.b_field(Vector{0.05,0,0}).norm()<<std::endl;
+    
+    Space s1{p_w1,p_w2};
+
+    std::cout<<s1<<s1.b_field(Vector{0.05,0,0})<<"\n"<<s1.b_field(Vector{0.05,0,0}).norm()<<std::endl;
+
+
     
 }

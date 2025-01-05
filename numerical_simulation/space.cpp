@@ -173,6 +173,7 @@ void Space::b_vector_field(Vector const &c1, Vector const &c2, long double const
     unsigned long long N_x{(unsigned long long)(x_range/spacing)};
     unsigned long long N_y{(unsigned long long)(y_range/spacing)};
     unsigned long long N_z{(unsigned long long)(z_range/spacing)};
+    std::cout<<"Iterations:\n\t"<<N_x<<"\n\t"<<N_y<<"\n\t"<<N_z<<"\n";
 
     //now, we loop through everything
     for(unsigned long long n_x{0}; n_x < N_x; n_x++){

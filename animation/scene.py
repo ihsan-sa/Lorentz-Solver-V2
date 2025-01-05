@@ -186,6 +186,18 @@ class plot_particle_path(ThreeDScene):
                 # self.wait(1.2)
                 # self.play(FadeOut(uef_txt))
 
+            if(line.strip() == "W"):
+                print("wire")
+                line = config_file.readline()
+                org = line.strip()
+                line = config_file.readline()
+                dir = line.strip()
+                line = config_file.readline()
+                i_wire = line.strip()
+
+                wire_txt = Text(f"Wire:\n\n\t- origin: {org}\n\t- direction: {dir}\n\t- current: {i_wire}")
+                data_disp.append(wire_txt)
+
         #always show the description
         self.play(Write(descp), Write(author.to_corner(DR)))
         self.wait(1.4)
@@ -401,6 +413,7 @@ class disp_b_vec_field(ThreeDScene):
             return vector[0] * RIGHT + vector[1] * UP + vector[2] * OUT
 
         # Example usage
+        os.system("./compiled_files/compiled_solver")
         field_data = load_csv_to_dict("data.csv")  # Load the CSV data
         field_func = lambda pos: csv_field_function_with_directions(pos, field_data)  # Define the lambda
 
@@ -415,9 +428,9 @@ class disp_b_vec_field(ThreeDScene):
         field = ArrowVectorField(
             field_func, 
             three_dimensions=True, 
-            x_range=[-2, 1, 0.2],  # Include the full range of your data
-            y_range=[-2, 1, 0.2],
-            z_range=[-2, 1, 0.2]
+            x_range=[-2, 2, 0.2],  # Include the full range of your data
+            y_range=[-2, 2, 0.2],
+            z_range=[-2, 2, 0.2]
         )        
         self.move_camera(phi=75 * DEGREES, theta=30 * DEGREES, zoom=1.3)
 
@@ -426,7 +439,7 @@ class disp_b_vec_field(ThreeDScene):
         )
         self.add(axes)
         self.play(Write(field))
-        self.wait()
+        self.wait(10)
 
 
 class VectorField3D(ThreeDScene):
@@ -441,6 +454,7 @@ class VectorField3D(ThreeDScene):
         self.move_camera(phi=75 * DEGREES, theta=30 * DEGREES, zoom=0.8)
 
         # Read the CSV file and add arrows
+        os.system("./compiled_files/compiled_solver")
         with open("data.csv", "r") as csvfile:
             reader = csv.DictReader(csvfile)
             for row in reader:

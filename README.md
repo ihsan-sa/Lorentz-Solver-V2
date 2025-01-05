@@ -364,16 +364,16 @@ By default, the object presentation is switched off and the vectors are displaye
 
 For higher quality rendering, consult Manim Community's documentation. You can run the generic command:   
 ```
-manim -pqh scene.py [class_name]
+manim -pqh ./animation/scene.py [class_name]
 ```
 
 After running `make` and updating `config.txt`, you will need to run the execuatable `./compiled_files/compiled_solver`.
 Then, if you are running a Lorentz Motion simulation, run the command:
 ```
-manim -pqh scene.py plot_particle_path
+manim -pqh ./animation/scene.py plot_particle_path
 ```
 For a B Field simulation, run:
 ```
-manim -pqh scene.py disp_b_vec_field
+manim -pqh ./animation/scene.py disp_b_vec_field
 ```
 

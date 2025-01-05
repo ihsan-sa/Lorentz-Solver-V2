@@ -51,6 +51,8 @@ public:
     static long double dist(Vector const &v1, Vector const &v2); //returns the distance between two vectors
     Vector &normalize(); //normalizes the vector
     Vector &change_mag(long double new_mag); //changes the magnitude of the vector
+    Vector proj(Vector const &vec) const; //returns the projection of *this onto vec
+    Vector perp(Vector const &vec) const; //returns the perp of *this onto vec
 
     
     friend std::ostream &operator<<(std::ostream &out, Vector const &rhs); //for printing vectors

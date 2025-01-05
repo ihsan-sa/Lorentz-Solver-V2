@@ -189,6 +189,15 @@ Vector &Vector::change_mag(long double new_mag){
     return *this;
 }
 
+Vector Vector::proj(Vector const &vec) const{
+    return (((*this % vec)/(vec % vec)) * vec);
+}
+Vector Vector::perp(Vector const &vec) const{
+    return (*this - proj(vec));
+}
+ 
+
+
 std::ostream &operator<<(std::ostream &out, Vector const &rhs){
     out << "["<<rhs.x()<<","<<rhs.y()<<","<<rhs.z()<<"]";
     return out;
