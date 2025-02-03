@@ -4,6 +4,9 @@
 #include <iostream>
 #include "config.hpp"
 
+/***
+ * @brief A class for vectors in R^3.
+ */
 class Vector;
 
 class Vector{

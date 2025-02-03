@@ -5,7 +5,10 @@
 #include <vector>
 #include <initializer_list>
 
-class Space;
+/***
+ * @brief A space contains the objects and particles involved in the simulation.
+ */
+class Space; 
 
 class Space : public Object{
     std::vector<Object*> p_objects_;

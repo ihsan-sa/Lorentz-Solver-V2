@@ -4,7 +4,7 @@
 #include "vector.hpp"
 #include <vector>
 
-//constants etc
+//constants
 
 #define K 8.987551787e9
 #define MU_0 1.256637061e-6
@@ -19,11 +19,11 @@ class UMF; //uniform magnetic field
 
 class SUMF; //sectioned uniform magnetic field
 
-class Wire;
+class Wire; //wire
 
 class SPC; //static point charge
 
-class Particle;
+class Particle; //particle
 
 //class declarations
 
@@ -34,7 +34,7 @@ public:
     virtual Vector b_field(Vector const &pos) const = 0; //returns the magnetic field vector at a point due to that object
 
     virtual void print() const = 0;
-    friend std::ostream &operator<<(std::ostream &out, Object rhs);
+    // friend std::ostream &operator<<(std::ostream &out, Object rhs); // REVIEW
 };
 
 class UEF : public Object{
