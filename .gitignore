@@ -1,0 +1,14 @@
+*.out
+*.csv
+*.txt
+*.vscode
+.vscode
+
+__pycache__
+./animation/__pycache__
+media
+
+compiled_files
+other_config_files
+
+!config.txt
