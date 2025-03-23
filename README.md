@@ -1,7 +1,9 @@
 # Lorentz-Solver-V2
 
-This Lorentz solver is designed to compute the paths of particles in complex custom electromagnetic spaces and then animate them using the Manim library for maximum clarity.  
+This Lorentz solver is designed to compute the paths of particles in complex custom electromagnetic spaces and then animate them using the Manim library for maximum clarity.
 
+See [documentation site](https://ihsan-sa.atlassian.net/wiki/external/OTkwYmYyM2RjNzI1NGNhM2E1ZWEzZjgzYjkxMWFjOWY).
+<!-- 
 See the [*Examples* section](#examples) for images and videos.
 
 **Contents**
@@ -375,5 +377,5 @@ manim -pqh ./animation/scene.py plot_particle_path
 For a B Field simulation, run:
 ```
 manim -pqh ./animation/scene.py disp_b_vec_field
-```
+``` -->
 

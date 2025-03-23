@@ -7,16 +7,16 @@ SIM
 
 
 CONFIG
-B Field
-[-2,-2,-2]
-[2,2,2]
-0.1
+Lorentz Motion
+10
+0.01
+RK4 Euler
 
 
 W
 [0,0,0]
 [0,0,1]
-2000
+20000
 
 
 P
