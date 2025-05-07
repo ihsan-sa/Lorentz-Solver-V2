@@ -8,6 +8,10 @@ std::string get_line(std::size_t const idx){
     std::size_t line_idx{0};
     std::string line{};
     while(std::getline(Config_file, line)){
+
+        line.erase(0, line.find_first_not_of(" \t\r\n"));
+        line.erase(line.find_last_not_of(" \t\r\n") + 1);
+
         if(line_idx == idx){
             Config_file.close();
             return line;
@@ -178,9 +182,11 @@ void run_simulation(){
     long double spacing{};
 
     std::size_t line_idx{0};
+
     while(get_line(line_idx) != "#"){
 
         std::string line = get_line(line_idx);
+
         if(line == "CONFIG"){
             // std::cout<<"Config\n";
             parse_config(t, dt, c1, c2, spacing, line_idx);
@@ -193,7 +199,6 @@ void run_simulation(){
             parse_UMF(sim_space, line_idx);
         }else if(line == "SUMF"){
             parse_SUMF(sim_space, line_idx);
-
         }else if(line == "UEF"){
             // std::cout<<"UEF\n";
             parse_UEF(sim_space, line_idx);
@@ -203,8 +208,8 @@ void run_simulation(){
         }else if(line == "W"){
             parse_wire(sim_space, line_idx);
         }
-    
         line_idx ++;
+
     }
 
     std::cout<<sim_space;

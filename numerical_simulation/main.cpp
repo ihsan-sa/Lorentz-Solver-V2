@@ -3,5 +3,4 @@
 
 int main(){
     run_simulation();
-
 }
