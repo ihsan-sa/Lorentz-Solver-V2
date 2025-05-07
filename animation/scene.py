@@ -47,9 +47,9 @@ class plot_particle_path(ThreeDScene):
 
         # Simulation configuration and settings
         output_ctxt = False
+        display_object_desc = False #print one at a time
         show_vecs = True
         vector_scale = 0.03
-
 
         # open config file
         config_file = open("config.txt", "r")
@@ -85,6 +85,10 @@ class plot_particle_path(ThreeDScene):
                 self.add_fixed_in_frame_mobjects(author)
             if(line.strip() == "SIM"):
                 sim_time = float(config_file.readline())
+                line = config_file.readline()
+                if(line.strip() == "Disp obj descp"):
+                    output_ctxt = True
+
             if(line.strip() == "CONFIG"):
                 line = config_file.readline()
                 sim_type = line.strip()
@@ -98,9 +102,10 @@ class plot_particle_path(ThreeDScene):
 
 
                 descp = Text(f"{title_line1}\n{title_line2} \n\n\n\t- Simulation Type: {sim_type} \n\n\t- Simulation time: {t} seconds\n\n\t- Simulation time step: {dt} seconds \n\n\t- Animation time: {sim_time} seconds\n\n\t- Numerical method: {num_method}", font_size=20, color=BLUE)
-                # self.play(Write(descp))
-                # self.wait(1.4)
-                # self.play(FadeOut(descp))
+                if display_object_desc:
+                    self.play(Write(descp))
+                    self.wait(1.4)
+                    self.play(FadeOut(descp))
 
             if(line.strip() == "P"):
                 print("particle")
@@ -115,9 +120,10 @@ class plot_particle_path(ThreeDScene):
 
                 particle_txt = Text(f"Particle: \n\n\t- pos: {pos}m \n\n\t- vel: {vel}m/s \n\n\t- charge: {q}C \n\n\t- mass: {m}kg", font_size=25, color=RED)
                 data_disp.append(particle_txt)
-                # self.play(Write(particle_txt))
-                # self.wait(1.2)
-                # self.play(FadeOut(particle_txt))
+                if display_object_desc:
+                    self.play(Write(particle_txt))
+                    self.wait(1.2)
+                    self.play(FadeOut(particle_txt))
 
             if(line.strip() == "SPC"):
                 print("spc")
@@ -129,9 +135,11 @@ class plot_particle_path(ThreeDScene):
                 spc_txt = Text(f"Static Point Charge (SPC): \n\n\t- pos: {pos}m \n\n\t- charge: {q}C", font_size=25, color=GREEN)
                 data_disp.append(spc_txt)
                 point_charges.append(string_to_vec(pos))
-                # self.play(Write(spc_txt))
-                # self.wait(1.2)
-                # self.play(FadeOut(spc_txt))
+
+                if display_object_desc:
+                    self.play(Write(spc_txt))
+                    self.wait(1.2)
+                    self.play(FadeOut(spc_txt))
 
             if(line.strip() == "UMF"):
                 print("umf")
@@ -142,9 +150,11 @@ class plot_particle_path(ThreeDScene):
                 umf_txt = Text(f"Uniform Magnetic Field: \n\n\t- field vector: {field}", font_size=25, color=BLUE)
                 data_disp.append(umf_txt)
                 umfs.append(string_to_vec(field))
-                # self.play(Write(umf_txt))
-                # self.wait(1.2)
-                # self.play(FadeOut(umf_txt))
+
+                if display_object_desc:
+                    self.play(Write(umf_txt))
+                    self.wait(1.2)
+                    self.play(FadeOut(umf_txt))
             if(line.strip() == "SUMF"):
                 print("sumf")
                 line = config_file.readline()
@@ -182,9 +192,11 @@ class plot_particle_path(ThreeDScene):
                 uef_txt = Text(f"Uniform Electric Field: \n\n\t- field vector: {field}", font_size=25, color=ORANGE)
                 data_disp.append(uef_txt)
                 uefs.append(string_to_vec(field))
-                # self.play(Write(uef_txt))
-                # self.wait(1.2)
-                # self.play(FadeOut(uef_txt))
+
+                if display_object_desc:
+                    self.play(Write(uef_txt))
+                    self.wait(1.2)
+                    self.play(FadeOut(uef_txt))
 
             if(line.strip() == "W"):
                 print("wire")
