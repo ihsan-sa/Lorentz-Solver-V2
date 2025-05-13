@@ -34,7 +34,8 @@ enum Output_Config{
  */
 enum Simulation_Type{
     lorentz_motion, 
-    b_field
+    b_field, 
+    static_compute
 };
 
 //global enum declarations
