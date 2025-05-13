@@ -3,7 +3,6 @@ Std sim
 
 SIM
 10
-Disp obj descp
 
 
 CONFIG
@@ -21,10 +20,46 @@ UEF
 
 
 P
-[0.1, 0, 0]
+[1, 0, 0]
 [10, 10, 1]
 1
+1
+
+P
+[-1, 0, 0]
+[10, 10, 1]
+-1
+1
+
+#
+
+TITLE
+Example simulation
+SIM
+10
+
+
+CONFIG
+Lorentz Motion
 0.01
+0.000001
+RK4 Euler
+
+
+SPC
+[0, 0, 0]
+8
+
+
+SPC
+[1, 0, 0]
+-2
+
+P
+[1.7, 0, 0]
+[0,0,0]
+1
+1000
 
 #
 #

@@ -390,16 +390,47 @@ class plot_particle_path(ThreeDScene):
             point = Dot3D(point=axes.c2p(*spc), color=GREEN, radius=0.05)
             self.add(point)
 
+
+        # AI AI
+        # Create the 3D dot at the starting position
+        dot = Dot3D(point=all_points[i][0], color=RED, radius=0.05)
+
+        # Define an updater to move the dot along the line as it is being drawn
+        def update_dot(dot):
+            # Get the last point of the line being drawn
+            dot.move_to(all_lines[i].get_end())
+
+        # Add the updater to the dot
+        dot.add_updater(update_dot)
+
+        # Add the dot to the scene
+        self.add(dot)
+
         #draw the particle path
         self.play(
             *[Write(all_lines[i]) for i in range(n_particles)],
             run_time = sim_time)
+
+        # Draw the line
+        # self.play(Write(all_lines[i]), run_time=sim_time)
+
+        # Remove the updater after the animation (optional)
+        dot.remove_updater(update_dot)
+
+        # end AI
+
+
+        # #draw the particle path
+        # self.play(
+        #     *[Write(all_lines[i]) for i in range(n_particles)],
+        #     run_time = sim_time)
         
         #keep rotating for a bit longer
         self.wait(5)
 
         #print data_file for debugging
         print(data_file)
+
 
 
 ##TESTS USING AI -- WORKING TOWARDS IMPLEMENTING THIS DIFFERENTLY
