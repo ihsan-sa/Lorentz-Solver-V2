@@ -313,6 +313,88 @@ std::ostream &operator<<(std::ostream &out, Wire const &rhs){
     return out;
 }
 
+// COIL
+
+Coil::Coil(void) : 
+org_{Vector{}}, 
+dir_{Vector{}}, 
+r_{0}, 
+i_{0}{
+    //empty constructor
+}
+Coil::Coil(const Vector &org, const Vector &dir, const long double r, const long double i) :
+org_{org}, 
+dir_{dir}, 
+i_{i}, 
+r_{r}{
+    dir_.normalize(); //make this a unit vector
+}
+Coil::~Coil(void){
+    org_ = Vector{};
+    dir_ = Vector{};
+    r_ = 0;
+    i_ = 0;
+}
+
+Coil::Coil(const Coil &org) :
+org_{org.org()}, 
+dir_{org.dir()}, 
+r_{org.r()}, 
+i_{org.i()}{
+    dir_.normalize();
+}
+Coil::Coil(Coil &&org) :
+org_{Vector{}}, 
+dir_{Vector{}}, 
+r_{0}, 
+i_{0}{
+    std::swap(org_, org.org_);
+    std::swap(dir_, org.dir_);
+    std::swap(r_, org.r_);
+    std::swap(i_, org.i_);
+}
+
+Vector Coil::org(void) const {
+    return org_;
+}
+Vector Coil::dir(void) const{
+    return dir_;
+}
+long double Coil::r(void) const{
+    return r_;
+}
+long double Coil::i(void) const{
+    return i_;
+}
+
+bool Coil::is_particle(void) const{
+    return false;
+}
+Vector Coil::e_field(const Vector &pos) const{
+    return Vector{};
+}
+Vector Coil::b_field(const Vector &pos) const{
+    return Vector{};
+}
+
+void Coil::print(void) const {
+    std::cout<<"\tCoil";
+    std::cout<<"\n\t\torg: "<<org();
+    std::cout<<"\n\t\tdir: "<<dir();
+    std::cout<<"\n\t\tradius: "<<r();
+    std::cout<<"\n\t\tcurrent: "<<i();
+    std::cout<<std::endl;
+}
+std::ostream &operator<<(std::ostream &out, const Coil &rhs){
+    out<<"Coil";
+    out<<"\n\torg: "<<rhs.org();
+    out<<"\n\tdir: "<<rhs.dir();
+    out<<"\n\tradius: "<<rhs.r();
+    out<<"\n\tcurrent: "<<rhs.i();
+    out<<std::endl;
+
+    return out;
+}
 
 //PARTICLE
 
