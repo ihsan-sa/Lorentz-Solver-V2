@@ -175,6 +175,22 @@ void parse_wire(Space &space, std::size_t &line_idx){
     line_idx++;
 }
 
+void parse_coil(Space &space, std::size_t &line_idx){
+    line_idx++;
+    Vector org{extract_vector(get_line(line_idx))};
+    line_idx++;
+    Vector dir{extract_vector(get_line(line_idx))};
+    line_idx++;
+    long double r{std::stold(get_line(line_idx))};
+    line_idx++;
+    long double i{std::stold(get_line(line_idx))};
+
+    Coil *p_coil{new Coil{org, dir, r, i}};
+    space.add({p_coil});
+    line_idx++;
+}
+
+
 void run_simulation(){
     Space sim_space{};
 
@@ -217,6 +233,8 @@ void run_simulation(){
             parse_SPC(sim_space, line_idx);
         }else if(line == "W"){
             parse_wire(sim_space, line_idx);
+        }else if(line == "C"){
+            parse_coil(sim_space, line_idx);
         }
         line_idx ++;
 

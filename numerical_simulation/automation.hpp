@@ -11,6 +11,7 @@ void parse_SUMF(Space &space, std::size_t &line_idx); //parses the information i
 void parse_UEF(Space &space, std::size_t &line_idx); //parses the information in a UEF block
 void parse_config(long double &t, long double &dt, Vector &c1, Vector &c2, long double &spacing, std::size_t &line_idx); //parses the information in a config block
 void parse_wire(Space &space, std::size_t &line_idx); //parses the information in a wire block
+void parse_coil(Space &space, std::size_t &line_idx); //parses the information in a coil block
 
 std::string get_line(std::size_t const idx); //gets the specified line in the config file
 
