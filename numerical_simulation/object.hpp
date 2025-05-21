@@ -128,6 +128,36 @@ public:
 
 };
 
+class Coil : public Object{
+    Vector org_; // position of center of coil
+    Vector dir_; // direction perpendicular to plane of coil
+    long double r_; // radius
+    long double i_; // current through coil
+public:
+
+    //constructor
+    Coil(void);
+    Coil(const Vector &org, const Vector &dir, const long double r, const long double i);
+    ~Coil(void);
+
+    //copy and move
+    Coil(const Coil &org);
+    Coil(Coil &&org);
+
+    //API
+    Vector org(void) const;
+    Vector dir(void) const;
+    long double r(void) const;
+    long double i(void) const;
+
+    bool is_particle(void) const override;
+    Vector e_field(const Vector &pos) const override;
+    Vector b_field(const Vector &pos) const override;
+
+    void print(void) const override;
+    friend std::ostream &operator<<(std::ostream &out, const Coil &rhs);
+};
+
 class SPC : public Object{
     Vector pos_;
     long double q_;
