@@ -121,7 +121,7 @@ void parse_SPC(Space &space, std::size_t &line_idx){
     line_idx++;
 }
 
-void parse_config(long double &t, long double &dt, Vector &c1, Vector &c2, long double &spacing, Vector &target_position, std::size_t &line_idx){
+void parse_config(long double &t, long double &dt, Vector &c1, Vector &c2, long double &spacing, std::vector<Vector> &target_positions, std::size_t &line_idx){
     line_idx++;
     std::string sim_type{get_line(line_idx)};
     if(sim_type == "Lorentz Motion"){
@@ -153,8 +153,11 @@ void parse_config(long double &t, long double &dt, Vector &c1, Vector &c2, long 
         spacing = std::stold(get_line(line_idx));
     } else if(sim_type == "Static"){
         cfig_sim_type = static_compute;
-        line_idx++;
-        target_position = Vector{extract_vector(get_line(line_idx))};
+        do{
+            line_idx++;
+            Vector pos{extract_vector(get_line(line_idx))};
+            target_positions.push_back(pos);
+        } while(get_line(line_idx + 1) != "");
     }
     line_idx++;
 }
@@ -186,7 +189,7 @@ void run_simulation(){
     long double spacing{};
 
     //static 
-    Vector target_position{};
+    std::vector<Vector> target_positions;
 
     std::size_t line_idx{0};
 
@@ -196,7 +199,7 @@ void run_simulation(){
 
         if(line == "CONFIG"){
             // std::cout<<"Config\n";
-            parse_config(t, dt, c1, c2, spacing, target_position, line_idx);
+            parse_config(t, dt, c1, c2, spacing, target_positions, line_idx);
         }
         else if(line == "P"){
             // std::cout<<"P\n";
@@ -233,7 +236,9 @@ void run_simulation(){
         std::cout<<"Running bfield sim: \n\t"<<c1<<"\n\t"<<c2<<"\n\t"<<spacing<<'\n';
         sim_space.b_vector_field(c1, c2, spacing);
     }else if(cfig_sim_type == static_compute){
-        std::cout<<"\n\nStatic simulation. Computing fields at position "<<target_position<<std::endl;
-        std::cout<<"E field: "<<sim_space.e_field(target_position)<<" B field: "<<sim_space.b_field(target_position)<<std::endl;
+        std::cout<<"\n\nStatic simulation"<<std::endl;
+        for(Vector position : target_positions){
+            std::cout<<"Position: "<<position<<" E field: "<<sim_space.e_field(position)<<" B field: "<<sim_space.b_field(position)<<std::endl;
+        }
     }
 }
