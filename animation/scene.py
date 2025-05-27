@@ -207,8 +207,32 @@ class plot_particle_path(ThreeDScene):
                 line = config_file.readline()
                 i_wire = line.strip()
 
-                wire_txt = Text(f"Wire:\n\n\t- origin: {org}\n\t- direction: {dir}\n\t- current: {i_wire}")
+                wire_txt = Text(f"Wire:\n\n\t- origin: {org}\n\n\t- direction: {dir}\n\n\t- current: {i_wire}", font_size=25, color=PURPLE_A)
                 data_disp.append(wire_txt)
+
+                if display_object_desc:
+                    self.play(Write(wire_txt))
+                    self.wait(1.2)
+                    self.play(FadeOut(wire_txt))
+
+            if(line.strip() == "C"):
+                print("coil")
+                line = config_file.readline()
+                org = line.strip()
+                line = config_file.readline()
+                dir = line.strip()
+                line = config_file.readline()
+                r = line.strip()
+                line = config_file.readline()
+                i = line.strip()
+
+                coil_txt = Text(f"Coil:\n\n\t- origin: {org}\n\n\t- direction: {dir}\n\n\t- radius: {r}\n\n\t- current: {i}", font_size=25, color=PURPLE_B)
+                data_disp.append(coil_txt)
+
+                if display_object_desc:
+                    self.play(Write(coil_txt))
+                    self.wait(1.2)
+                    self.play(FadeOut(coil_txt))
 
         #always show the description
         self.play(Write(descp), Write(author.to_corner(DR)))

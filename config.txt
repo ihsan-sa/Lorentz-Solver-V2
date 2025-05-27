@@ -5,10 +5,11 @@ SIM
 10
 Disp obj descp
 
-
 CONFIG
-Static
-[1,1,-1.5]
+Lorentz Motion
+3
+0.001
+RK4 Euler
 
 SPC
 [2,-1.5,0]
@@ -21,6 +22,12 @@ SPC
 SPC
 [0,2, -1.5]
 0.000001
+
+P
+[-2,-2,-2]
+[0,0,0]
+1
+1
 
 C
 [0,0,0]
