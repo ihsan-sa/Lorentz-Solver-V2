@@ -398,15 +398,30 @@ Vector Particle::e_field(Vector const &new_pos) const{
     long double const r{Vector::dist(pos(), new_pos)};
 
     if(cfig_field_at_pt == zero){
-        if(std::abs(r) < TOLERANCE) return Vector{0,0,0}; //if the distance is zero, we return the zero vector instead of infinity
+        if(std::abs(r) < TOLERANCE) {
+            return Vector{0,0,0};
+        } //if the distance is zero, we return the zero vector instead of infinity
     }
 
     long double const e_field_strength{K * q() / std::pow(r, 2)};
     Vector dir{new_pos - pos()}; //vector from 
     return dir.change_mag(e_field_strength);
 }
-Vector Particle::b_field(Vector const &pos) const{
-    return Vector{};
+Vector Particle::b_field(Vector const &new_pos) const{
+
+    Vector r_hat{(new_pos - pos()).normalize()};
+    long double const r{Vector::dist(pos(), new_pos)};
+
+    if(cfig_field_at_pt == zero){
+        if(std::abs(r) < TOLERANCE) {
+            return Vector{0,0,0};
+        } //if the distance is zero, we return the zero vector instead of infinity
+    }
+
+    Vector b = {vel()*r_hat};
+    b *= q() * MU_0_DIV_4PI * (1.0/(r*r));
+
+    return b;
 }
 
 std::ostream &operator<<(std::ostream &out, Particle const &rhs){

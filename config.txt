@@ -1,26 +1,37 @@
 TITLE
-Std sim
+sim
 
-SIM
-10
-Disp obj descp
-
+SIM 
+8
 
 CONFIG
-Static
-[1,1,-1.5]
+Lorentz Motion
+10
+0.001
+RK4 Euler
 
-SPC
-[2,-1.5,0]
-0.000001
 
-SPC
-[-0.5, 1.5,1]
--0.000001
+P
+[0,0,0]
+[1,1,1]
+1e-4
+1e-5
 
-SPC
-[0,2, -1.5]
-0.000001
+P
+[10,0,0]
+[-1,-1,1]
+1e-4
+1e-5
+
+
+
+UMF
+[0,0,1]
+
+
+#
+
+
 
 
 #

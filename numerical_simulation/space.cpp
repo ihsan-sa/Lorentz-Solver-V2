@@ -1,5 +1,6 @@
 #include "space.hpp"
 #include <fstream>
+
 Space::~Space(){
     for(Object *p_object : p_objects_){
         delete p_object;
