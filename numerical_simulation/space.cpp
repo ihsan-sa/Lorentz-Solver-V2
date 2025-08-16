@@ -180,10 +180,12 @@ void Space::b_vector_field(Vector const &c1, Vector const &c2, long double const
         for(unsigned long long n_y{0}; n_y < N_y; n_y++){
             for(unsigned long long n_z{0}; n_z < N_z; n_z++){
 
-                Vector offset{n_z*spacing, n_y*spacing, n_z*spacing};
+                Vector offset{n_x*spacing, n_y*spacing, n_z*spacing};
                 Vector pos{c1 + offset};
 
-                File<<pos.x()<<","<<pos.y()<<","<<pos.z()<<","<<b_field(pos).x()<<","<<b_field(pos).y()<<","<<b_field(pos).z()<<std::endl;
+                Vector b_field_vector = b_field(pos);
+
+                File<<pos.x()<<","<<pos.y()<<","<<pos.z()<<","<<b_field_vector.x()<<","<<b_field_vector.y()<<","<<b_field_vector.z()<<std::endl;
 
             }
         }

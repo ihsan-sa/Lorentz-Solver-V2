@@ -130,7 +130,7 @@ public:
 
 class Coil : public Object{
     Vector org_; // position of center of coil
-    Vector dir_; // direction perpendicular to plane of coil
+    Vector dir_; // direction perpendicular to plane of coil - unit vector
     long double r_; // radius
     long double i_; // current through coil
 public:

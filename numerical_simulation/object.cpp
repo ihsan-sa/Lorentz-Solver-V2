@@ -1,5 +1,12 @@
 #include "object.hpp"
 #include <cmath>
+#define _USE_MATH_DEFINES
+#include "math.h"
+#include <fstream>
+
+// private declarations
+static Vector _P_of_theta(const long double theta, const long double r, const Vector &s_hat, const Vector &r_hat, const Vector &org);
+
 
 //UEF
 
@@ -373,8 +380,117 @@ bool Coil::is_particle(void) const{
 Vector Coil::e_field(const Vector &pos) const{
     return Vector{};
 }
+
+//now define a new function that returns the radius vector R
+static Vector _P_of_theta(const long double theta, const long double r, const Vector &s_hat, const Vector &t_hat, const Vector &org){
+    Vector P{org + ((r*cos(theta) * s_hat) + (r*sin(theta) * t_hat))};
+    return P;
+}
+
 Vector Coil::b_field(const Vector &pos) const{
-    return Vector{};
+
+    // std::ofstream File{"data.csv"};
+    // File<<"theta,x,y,z,\n";
+
+    //first, determine the equation of the plane
+    //consider plane ax + by + cz = d, where x, y, z are the components of the normal vector (here _dir)
+    // std::cout<<"\n";
+    
+    long double d = dir() % org(); 
+
+    // std::cout << "d: "<<d<<"\n";
+
+    //now, we find a random point on the plane. 
+    //we take x = y = 1, and solve for z
+    //so z = (d - a - b)/c   If c is zero, we just set z = 1
+    Vector s_hat{};
+
+    if(dir().y() == 0 && dir().z() == 0){
+        s_hat = Vector{0,1,1}.normalize();
+    } else if(dir().x() == 0 && dir().z() == 0){
+        s_hat = Vector{1,0,1}.normalize();
+    } else if(dir().x() == 0 && dir().y() == 0){
+        s_hat = Vector{1,1,0}.normalize();
+    }
+    else{
+        Vector p1{1, 1, (dir().z() == 0) ? 1 : (d - dir().x() - dir().y())/dir().z()};
+        s_hat = Vector{(p1 - org()).normalize()};
+    }
+    // std::cout << "p1: "<<p1<<"\n";
+
+    //now we have p1 on the plane. Let's make a unit vector s_hat = p1 - org()
+    // std::cout << "s_hat: "<<s_hat<<"\n";
+
+    //now we need another unit vector on the plane orthogonal to s_hat
+    //choose t1, t2 = 1, solve for t3
+    //we know s_hat dot t_hat = 0
+    // so t3 = (-s1t1 - s2t2)/s3 if s3 = 0, set t3 = 1
+    
+    // long double t2 = (-s_hat.x() + (dir().x() * ((dir().z() == 0) ? 0 : s_hat.z()/dir().z())))/(s_hat.y() - (dir().y()*((dir().z() == 0) ? 0 : s_hat.z()/dir().z())));
+    // long double t3 = (-s_hat.x() - (s_hat.y() * t2))/s_hat.z();
+
+    // if(s_hat.z() == 0){
+    //     t3 = 0;
+    // }
+    // if(s_hat.y() - (dir().y()*((dir().z() == 0) ? 0 : s_hat.z()/dir().z())) == 0){
+    //     t2 = 0;
+    // }
+
+    Vector t_hat{(s_hat*dir()).normalize()};
+    // std::cout << "t_hat: "<<t_hat<<"\n";
+
+    // std::cout<<"s dot t: "<<s_hat%t_hat<<"\n";
+    // std::cout<<"s dot n: "<<s_hat%dir()<<"\n";
+    // std::cout<<"t dot : "<<t_hat%dir()<<"\n";
+    
+    
+    // std::cout<<"\n";
+
+    //so now the equation of the plane is r = org() + ms_hat + nt_hat
+
+    //we can use static Vector _R_of_theta(const long double theta, const long double r, const Vector &s_hat, const Vector &t_hat, const Vector &org); to get the radius vector
+
+    //now we numerically integrate Biot-Savart
+    //dB = u0/4pi * (ids x r_hat)/r^2
+
+    Vector B{};
+    // std::cout << "B: "<<B<<"\n";
+
+    constexpr long double dtheta = (long double)M_PI/360;
+
+    for(long double theta = 0; theta < M_PI*2; theta += dtheta){
+        // std::cout << "theta: "<<theta<<"\n";
+        Vector P{_P_of_theta(theta, r(), s_hat, t_hat, org())};
+        // std::cout << "\tR: "<<R<<"\n";
+        // Vector ds{(dir()*R).normalize()};
+        Vector ds = r() * (-sin(theta) * s_hat + cos(theta) * t_hat);
+        // std::cout << "\tds: "<<ds<<"\n";
+        ds *= i();
+        // std::cout << "\ti*ds: "<<ds<<"\n";
+
+
+        // std::cout<<"\tQ: "<<Q<<"\n";
+
+        Vector r{pos - P};
+        // std::cout << "\tr: "<<r<<"\n";
+
+        Vector dB{(MU_0_DIV_4PI / (r.norm() * r.norm())) * (ds*(r.normalize()))};
+        // std::cout << "\tdB: "<<dB<<"\n";
+
+
+        B += dB * dtheta;
+        // std::cout << "\tB: "<<B<<"\n";
+
+        // std::cout << "\ttheta: "<<theta*180./M_PI<<"\tP: "<<P<<"\tdB"<<dB<<"\tR"<<R<<"\tds"<<ds<<"\tr"<<r<<"\tdB_mag: "<<dB.norm()<<"\tpos:"<<pos<<"\n";
+        // File<<theta*180./M_PI<<","<<dB.x()<<","<<dB.y()<<","<<dB.z()<<",\n";
+
+
+    }
+
+    // std::cout<<"\nReturning B = "<<B<<"  ||B|| = "<<B.norm()<<std::endl;
+
+    return B;
+
 }
 
 void Coil::print(void) const {

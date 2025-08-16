@@ -428,6 +428,66 @@ class plot_particle_path(ThreeDScene):
 
 ##TESTS USING AI -- WORKING TOWARDS IMPLEMENTING THIS DIFFERENTLY
 
+# class disp_b_vec_field(ThreeDScene):
+#     def construct(self):
+#         print("bfield")
+
+#         def load_csv_to_dict(csv_file):
+#             field_data = {}
+#             with open(csv_file, "r") as csvfile:
+#                 reader = csv.DictReader(csvfile)
+#                 for row in reader:
+#                     x, y, z = float(row["x"]), float(row["y"]), float(row["z"])
+#                     xf, yf, zf = float(row["xf"]), float(row["yf"]), float(row["zf"])
+#                     field_data[(x, y, z)] = np.array([xf, yf, zf])
+#             return field_data
+
+#         def csv_field_vector(pos, field_data):
+#             key = (round(pos[0], 1), round(pos[1], 1), round(pos[2], 1))
+#             return field_data.get(key, np.array([0, 0, 0]))
+
+#         # Optional: Normalize magnitude to [0, 1] range for color mapping
+#         def get_color_from_magnitude(mag, min_mag, max_mag):
+#             alpha = (mag - min_mag) / (max_mag - min_mag) if max_mag != min_mag else 0
+#             return color_gradient([BLUE, GREEN, YELLOW, RED], alpha)[0]
+
+#         os.system("./compiled_files/compiled_solver")
+#         field_data = load_csv_to_dict("data.csv")
+
+#         axes = ThreeDAxes(
+#             x_range=[-2, 2, 0.5],
+#             y_range=[-2, 2, 0.5],
+#             z_range=[-2, 2, 0.5]
+#         )
+
+#         # Compute magnitudes for color scaling
+#         magnitudes = [np.linalg.norm(v) for v in field_data.values()]
+#         min_mag = min(magnitudes)
+#         max_mag = max(magnitudes)
+
+#         arrows = VGroup()
+#         for (x, y, z), vec in field_data.items():
+#             pos = np.array([x, y, z])
+#             direction = vec
+#             mag = np.linalg.norm(direction)
+#             if mag == 0:
+#                 continue
+#             color = get_color_from_magnitude(mag, min_mag, max_mag)
+#             arrow = Arrow3D(
+#                 start=pos,
+#                 end=pos + direction * 0.5,  # scale vector length visually
+#                 color=color,
+#                 stroke_width=3
+#             )
+#             arrows.add(arrow)
+
+#         self.set_camera_orientation(phi=75 * DEGREES, theta=30 * DEGREES, zoom=1.3)
+#         self.begin_ambient_camera_rotation(rate=PI / 5, about="theta")
+
+#         self.add(axes)
+#         self.play(Write(arrows))
+#         self.wait(10)
+
 class disp_b_vec_field(ThreeDScene):
     def construct(self):
         print("bfield")

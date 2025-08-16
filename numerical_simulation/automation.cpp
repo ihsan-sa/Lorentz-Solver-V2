@@ -256,7 +256,9 @@ void run_simulation(){
     }else if(cfig_sim_type == static_compute){
         std::cout<<"\n\nStatic simulation"<<std::endl;
         for(Vector position : target_positions){
-            std::cout<<"Position: "<<position<<" E field: "<<sim_space.e_field(position)<<" B field: "<<sim_space.b_field(position)<<std::endl;
+            Vector e_field{sim_space.e_field(position)};
+            Vector b_field{sim_space.b_field(position)};
+            std::cout<<"Position: "<<position<<"\tE = "<<e_field<<"\t||E|| = "<<e_field.norm()<<"\tB = "<<b_field<<"\t||B|| = "<<b_field.norm()<<std::endl;
         }
     }
 }
