@@ -2,7 +2,7 @@
 
 This Lorentz solver is designed to compute the paths of particles in complex custom electromagnetic spaces and then animate them using the Manim library for maximum clarity.
 
-See [documentation site](https://ihsan-sa.atlassian.net/wiki/external/OTkwYmYyM2RjNzI1NGNhM2E1ZWEzZjgzYjkxMWFjOWY).
+See [documentation site](https://docs.ihsan.cc/projects/lorentzsolver/overview/).
 <!-- 
 See the [*Examples* section](#examples) for images and videos.
 
